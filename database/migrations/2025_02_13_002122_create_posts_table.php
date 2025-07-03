@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger("id_user");
             $table->string("title");
-            $table->string("post");
-            $table->integer("like");
+            $table->longText("post");
             $table->timestamps();
 
             $table->foreign("id_user")->references("id")->on("users")->onDelete("cascade")->onUpdate("cascade");
