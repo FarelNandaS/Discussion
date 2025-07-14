@@ -220,7 +220,7 @@ Proyek ini dilisensikan di bawah MIT License. Lihat file [LICENSE](LICENSE) untu
 
 ## 👨‍💻 Pembuat
 
-**FarelNandaS**
+**Farel Nanda S**
 
 - GitHub: [@FarelNandaS](https://github.com/FarelNandaS)
 
