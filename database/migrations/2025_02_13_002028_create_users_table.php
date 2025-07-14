@@ -21,9 +21,16 @@ return new class extends Migration
             $table->string("info")->nullable();
             $table->string("gender")->nullable();
             $table->string("image")->nullable();
-            $table->string('role')->default('user');
+            $table->enum('role', ['admin', 'user'])->default('user');
             $table->timestamps();
         });
+
+        DB::table('users')->insert([
+            'username'=>'tahukotak777',
+            'email'=>'farel@gmail.com',
+            'password'=>Hash::make('thuktk777'),
+            'role'=>'admin'
+        ]);
     }
 
     /**

@@ -91,6 +91,29 @@ class PostController extends Controller
 
         $post->delete();
 
+        if (request()->query('redirect') == 'home') {
+            return redirect('/')->with('alert', [
+                'type'=>'success',
+                'message'=>'successfully deleted the post'
+            ]);
+        }
+
+        return redirect()->back()->with('alert', [
+            'type'=>'success',
+            'message'=>'successfully deleted the post'
+        ]);
+    }
+
+    public function destroyDetailPost($id)
+    {
+        $post = post::find($id);
+
+        if (auth()->id() != $post->id_user && auth()->user()->role != 'admin') {
+            return abort(403);
+        }
+
+        $post->delete();
+
         return redirect('/')->with('alert', [
             'type'=>'success',
             'message'=>'successfully deleted the post'

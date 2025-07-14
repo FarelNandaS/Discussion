@@ -6,13 +6,51 @@
     <form action="/profile/update" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4 max-w-full">
       @csrf
       <div class="flex items-center justify-center gap-4 w-full">
-        <div class="relative">
+        <div class="relative" x-data="{
+        preview: null,
+
+        cropAndPreviewImage(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            const img = new Image();
+            img.onload = () => {
+              const size = Math.min(img.width, img.height);
+              const offsetX = (img.width - size) / 2;
+              const offsetY = (img.height - size) / 2;
+
+              const canvas = document.createElement('canvas');
+              canvas.width = 500;
+              canvas.height = 500;
+              const ctx = canvas.getContext('2d');
+
+              ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, 500, 500);
+
+              const croppedDataURL = canvas.toDataURL('image/png');
+              this.preview = croppedDataURL;
+
+              fetch(croppedDataURL)
+                .then(res => res.blob())
+                .then(blob => {
+                  const croppedFile = new File([blob], file.name, {type: blob.type});
+                  const dt =  new DataTransfer();
+                  dt.items.add(croppedFile);
+                  this.$refs.fileInput.files = dt.files;
+                });
+            }
+            img.src = evt.target.result;
+          }
+          reader.readAsDataURL(file);
+        }
+        }">
           <label for="image" class="cursor-pointer">
-            <img src="{{ $user->image ? '/assets/profile/' . $user->image : '/assets/profile/default.svg' }}"
+            <img :src="preview || '{{ $user->image ? '/assets/profile/' . $user->image : '/assets/profile/default.svg' }}' "
               alt="Profile Picture" width="100" height="100" class="object-cover rounded-full" id="imagePreview">
               <span class="absolute inset-0 bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-all"></span>
-          </label>
-          <input type="file" name="image" id="image" class="hidden">
+          </label>  
+          <input type="file" name="image" id="image" class="hidden" x-ref="fileInput" x-on:change="cropAndPreviewImage">
         </div>
         <div class="flex flex-col w-full">
           <label for="username">Username</label>
@@ -41,17 +79,4 @@
         class="bg-light text-ccblack p-2 rounded duration-150 transition-all hover:bg-primary hover:text-ccwhite hover:duration-150 hover:transition-all">Update</button>
     </form>
   </main>
-
-  <script>
-    document.getElementById('image').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          document.getElementById('imagePreview').src = evt.target.result;
-        }
-        reader.readAsDataURL(file);
-      }
-    });
-  </script>
 @endsection

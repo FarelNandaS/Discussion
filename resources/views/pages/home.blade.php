@@ -7,7 +7,7 @@
       @include('components.post', ['posts' => $posts['recommendation']])
     @else
       <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
-        <img src="/Images/not-found.svg" alt="not found" width="80px">
+        @include('icon.not-found')
         <h1 class="text-2xl font-bold">There is no post yet</h1>
       </div>
     @endif

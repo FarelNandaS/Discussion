@@ -2,11 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\post;
 use App\Models\saved;
+use Auth;
 use Illuminate\Http\Request;
 
 class SavedController extends Controller
 {
+    public function toggleSave($id) {
+        $post = post::find($id);
+        $user = Auth::user();
+        $saved = $post->isSavedByUser();
+
+        if ($saved) {
+            $post->saves()->where('id_user', '=', $user->id)->delete();
+            $saved = false;
+        } else {
+            $post->saves()->create(['id_user'=>$user->id]);
+            $saved = true;
+        }
+
+        return response()->json([
+            'saved'=>$saved,
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */
