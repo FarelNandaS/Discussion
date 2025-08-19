@@ -3,31 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\like;
-use App\Models\post;
-use Auth;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    public function toggleLike($id) {
-        $post = post::find($id);
-        $user = Auth::user();
-        $liked = $post->isLikedByUser();
-
-        if ($liked) {
-            $post->likes()->where('id_user', '=', $user->id)->delete();
-            $liked = false;
-        } else {
-            $post->likes()->create(['id_user' => $user->id]);
-            $liked = true;
-        }
-
-        return response()->json([
-            'liked' => $liked,
-            'likeCount' => $post->likes->count()
-        ]);
-    }
-
     /**
      * Display a listing of the resource.
      */
