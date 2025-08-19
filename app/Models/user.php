@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
+=======
+use Auth;
+>>>>>>> db3f44d355ad15ee29bc4fd62baae663e0e98b3c
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class user extends Authenticatable
@@ -37,4 +41,17 @@ class user extends Authenticatable
     public function following() {
         return $this->belongsToMany(user::class, 'followers', 'follower_id', 'user_id');
     }
+<<<<<<< HEAD
+=======
+
+    public function isFollowedByUser() {
+        $user = Auth::user();
+        
+        if (Auth::check()) {
+            return $this->followers()->where('follower_id', '=', $user->id)->exists();
+        } else {
+            return false;
+        }
+    }
+>>>>>>> db3f44d355ad15ee29bc4fd62baae663e0e98b3c
 }

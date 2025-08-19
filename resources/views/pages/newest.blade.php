@@ -1,7 +1,11 @@
 @extends('layout.default')
 @section('title', 'Newest')
 @section('main')
+<<<<<<< HEAD
   <main class="w-full min-h-[calc(100vh-60px)] p-4">
+=======
+  <main class="w-full min-h-[calc(100vh-60px)] border-l border-gray-600 p-4">
+>>>>>>> db3f44d355ad15ee29bc4fd62baae663e0e98b3c
     @if ($posts && $posts->count())
       <h1 class="text-2xl mb-4 border-b border-gray-500 pb-4">Newest</h1>
       @include('components.post', ['posts' => $posts])

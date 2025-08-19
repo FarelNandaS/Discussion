@@ -49,6 +49,7 @@ class IndexController extends Controller
     }
 
     public function EditProfile() {
+<<<<<<< HEAD
         if (!auth()->check()) {
             return redirect()->intended('/login')->with('alert', [
                 'type'=>'warning',
@@ -56,6 +57,8 @@ class IndexController extends Controller
             ]);
         }
 
+=======
+>>>>>>> db3f44d355ad15ee29bc4fd62baae663e0e98b3c
         $user = auth()->user();
         return view('pages.editProfile', [
             'user'=> $user,
@@ -64,6 +67,7 @@ class IndexController extends Controller
 
     public function post()
     {
+<<<<<<< HEAD
         if (!auth()->check()) {
             return redirect('/login')->with('alert', [
                 'type'=>'warning',
@@ -71,6 +75,8 @@ class IndexController extends Controller
             ]);
         }
 
+=======
+>>>>>>> db3f44d355ad15ee29bc4fd62baae663e0e98b3c
         return view('pages.post');
     }
 
@@ -120,6 +126,7 @@ class IndexController extends Controller
     }
 
     public function saved() {
+<<<<<<< HEAD
         if (!Auth::check()) {
             return redirect('/login')->with('alert', [
                 'type'=>'warning',
@@ -127,6 +134,8 @@ class IndexController extends Controller
             ]);
         }
 
+=======
+>>>>>>> db3f44d355ad15ee29bc4fd62baae663e0e98b3c
         $user = Auth::user();
         $posts = $user->saves->map->post;
 
