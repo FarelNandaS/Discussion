@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\comment;
 use Illuminate\Http\Request;
+use Validator;
 
 class CommentController extends Controller
 {
@@ -26,9 +27,29 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'comment'=>'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('alert', [
+                'type'=>'error',
+                'message'=> $validator->errors()->first(),
+            ]);
+        }
+
+        comment::create([
+            'id_user'=>auth()->user()->id,
+            'id_post'=>$id,
+            'comment'=> $request->comment,
+        ]);
+
+        return redirect()->back()->with('alert', [
+            "type"=>'success',
+            'message'=>'successfully added a comment',
+        ]);
     }
 
     /**
@@ -58,8 +79,19 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(comment $comment)
+    public function destroy($id)
     {
-        //
+        $comment = comment::find($id);
+
+        if (auth()->id() != $comment->id_user && auth()->user()->role != 'admin') {
+            return abort(403);
+        }
+
+        $comment->delete();
+        
+        return redirect()->back()->with('alert', [
+            'type'=> 'success',
+            'message'=>'successfully deleted comment',
+        ]);
     }
 }

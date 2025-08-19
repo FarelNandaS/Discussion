@@ -1,12 +1,24 @@
-<div class="w-full h-[73px] top-0 left-0 flex justify-between items-center p-4 bg-orange-500 fixed z-10">
-  <h1 class="text-2xl font-bold ">Discussion</h1>
-    <form class="flex justify-center items-center gap-2">
-        <input type="text" placeholder="Search..." class="p-2 rounded bg-[#272727] w-[50vw]" name="key">
-        <button class="flex justify-center items-center text-white bg-[#272727] p-[10px] rounded"><img src="/Images/search.svg" alt="search" width="20px" height="20px"></button>
-    </form>
+<nav class="h-[60px] p-4 flex justify-between items-center px-8 bg-primary text-white">
+  <div></div>
+
+  {{-- Search --}}
+  <form class="flex items-center gap-2 m-0 w-1/2 max-w-lg" action="/search">
+    <input type="text" 
+           name="key"
+           placeholder="Search..." 
+           value="{{ $key ?? '' }}"
+           class="p-2 rounded w-full bg-ccblack text-white outline-none focus:ring-2 focus:ring-white">
+    <button class="flex items-center justify-center bg-ccblack p-2 rounded">
+      <img src="/Images/search.svg" alt="search" width="20" height="20">
+    </button>
+  </form>
+
+  {{-- Profile/Login --}}
   <ul class="flex gap-4">
-    <li class="text-lg font-sans"><a href="">Home</a></li>
-    <li class="text-lg font-sans"><a href="">Tranding</a></li>
-    <li class="text-lg font-sans"><a href="">Profile</a></li>
+    @auth
+      <li class="text-lg"><a href="/{{ auth()->user()->username }}" class="hover:underline">Profile</a></li>
+    @else
+      <li class="text-lg"><a href="/login" class="hover:underline">Login</a></li>
+    @endauth
   </ul>
-</div>
+</nav>

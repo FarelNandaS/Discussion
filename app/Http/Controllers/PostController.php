@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -28,7 +29,29 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->user();
+
+        $validator = Validator::make(
+            $request->all(), [
+                "title"=> "required|String",
+                "post"=> "required|String",
+            ]
+        );
+        
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first());
+        }
+
+        post::create([
+            'id_user'=>$user->id,
+            'title'=>$request->title,
+            'post'=>$request->post,
+        ]);
+
+        return redirect('/')->with('alert', [
+            'type'=>'success',
+            'message'=>'successfully created a post'
+        ]);
     }
 
     /**
@@ -58,8 +81,19 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(post $post)
+    public function destroy($id)
     {
-        //
+        $post = post::find($id);
+
+        if (auth()->id() != $post->id_user && auth()->user()->role != 'admin') {
+            return abort(403);
+        }
+
+        $post->delete();
+
+        return redirect('/')->with('alert', [
+            'type'=>'success',
+            'message'=>'successfully deleted the post'
+        ]);
     }
 }
