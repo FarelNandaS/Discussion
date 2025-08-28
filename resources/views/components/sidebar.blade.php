@@ -1,6 +1,6 @@
 <aside class="w-[13%] fixed top-0 left-0 h-full border-r border-gray-600 bg-ccwhite dark:bg-ccblack">
   <h1 class="text-2xl font-bold flex justify-center items-center m-4">
-    <a href="/" class="hover:text-primary transition">Discussion</a>
+    <a href="/" class="">Discussion</a>
   </h1>
 
   <ul class="flex flex-col mt-6">
