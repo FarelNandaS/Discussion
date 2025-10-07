@@ -38,6 +38,8 @@ class IndexController extends Controller
     public function Profile($username)
     {
         $user = user::where('username', '=', $username)->get()->first();
+        $posts = $user->posts;
+        $likes = $user->likes;
 
         if (empty($user)) {
             return view('pages.not-found');
@@ -45,20 +47,23 @@ class IndexController extends Controller
 
         return view('pages.profile', [
             'user' => $user,
+            'posts' => $posts,
+            'likes' => $likes,
         ]);
     }
 
-    public function EditProfile() {
+    public function EditProfile()
+    {
         if (!auth()->check()) {
             return redirect()->intended('/login')->with('alert', [
-                'type'=>'warning',
-                'message'=>'you are not logged in yet',
+                'type' => 'warning',
+                'message' => 'you are not logged in yet',
             ]);
         }
 
         $user = auth()->user();
         return view('pages.editProfile', [
-            'user'=> $user,
+            'user' => $user,
         ]);
     }
 
@@ -66,64 +71,68 @@ class IndexController extends Controller
     {
         if (!auth()->check()) {
             return redirect('/login')->with('alert', [
-                'type'=>'warning',
-                'message'=>'you are not logged in yet',
+                'type' => 'warning',
+                'message' => 'you are not logged in yet',
             ]);
         }
 
         return view('pages.post');
     }
 
-    public function DetailPost($id) {
+    public function DetailPost($id)
+    {
         $post = Post::find($id);
         $comments = comment::where('id_post', '=', $post->id)->latest()->get();
         if (isset($post)) {
             return view('pages.detail-post', [
-                'post'=> $post,
-                'comments'=>$comments,
+                'post' => $post,
+                'comments' => $comments,
             ]);
         }
     }
 
-    public function search(Request $request, ) {
+    public function search(Request $request, )
+    {
         $key = $request->key;
 
         $validator = Validator::make([
-            'key'=>$key,
+            'key' => $key,
         ], [
-            'key'=>"required"
+            'key' => "required"
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->with('alert', [
-                'type'=>'error',
-                'message'=>$validator->errors()->first(),
+                'type' => 'error',
+                'message' => $validator->errors()->first(),
             ]);
         }
 
-        $posts = post::where('title', 'like', '%'.$key.'%')->orWhere('post', 'like', '%'.$key.'%')->get();
+        $posts = post::where('title', 'like', '%' . $key . '%')->orWhere('post', 'like', '%' . $key . '%')->get();
         $users = user::where('username', 'like', '%' . $key . '%')->get();
 
         return view('pages.search', [
-            'key'=>$key,
-            'posts'=>$posts,
-            'users'=>$users,
+            'key' => $key,
+            'posts' => $posts,
+            'users' => $users,
         ]);
     }
 
-    public function newest() {
+    public function newest()
+    {
         $post = post::latest()->take('10')->get();
 
         return view('pages.newest', [
-            'posts'=>$post,
+            'posts' => $post,
         ]);
     }
 
-    public function saved() {
+    public function saved()
+    {
         if (!Auth::check()) {
             return redirect('/login')->with('alert', [
-                'type'=>'warning',
-                'message'=>'you are not logged in yet'
+                'type' => 'warning',
+                'message' => 'you are not logged in yet'
             ]);
         }
 
@@ -131,7 +140,11 @@ class IndexController extends Controller
         $posts = $user->saves->map->post;
 
         return view('pages.saved', [
-            'posts'=>$posts,
+            'posts' => $posts,
         ]);
+    }
+
+    public function dashboard() {
+        return view();
     }
 }

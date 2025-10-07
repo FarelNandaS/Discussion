@@ -1,113 +1,183 @@
 @extends('layout.default')
-@section('title', $user?->username)
+@section('title', 'Profile - ' . $user->username)
 @section('main')
   <main class=" min-h-[calc(100vh-60px)] min-w-full p-4">
     <div class="w-full flex justify-between border-b border-gray-600 py-4">
       <div class="flex flex-col gap-4">
-        <div class="flex w-full justify-between">
-          <h1 class="text-2xl flex items-center gap-4">
-            @if (isset($user->image))
-              <img src="/assets/profile/{{ $user->image }}" alt="profile image" width="100" height="100"
-                class="rounded-full">
+        <div class="flex flex-col lg:flex-row gap-4">
+          <div class="w-[100px] h-[100px] rounded-full overflow-hidden">
+            @if (isset($user->detail->image))
+              <img src="/assets/profile/{{ $user->detail->image }}" alt="profile image" width="100" height="100"
+                class="rounded-full object-cover w-full h-full">
             @else
-              <img src="/assets/profile/default.svg" alt="profile image" width="100" height="100"
-                class="rounded-full">
+              {!! file_get_contents(public_path('assets/profile/detailDefault.svg')) !!}
             @endif
-            {{ $user->username }}
-            @if ($user->role == 'admin')
-              <img src="/images/admin.svg" alt="admin" width="30">
-            @endif
-          </h1>
+          </div>
+          <div class="flex flex-col justify-center">
+            <h1 class="text-2xl flex items-center font-bold mb-2">
+              {{ $user->username }}
+              @if ($user->hasRole('Admin'))
+                {!! file_get_contents(public_path('images/adminBig.svg')) !!}
+              @endif
+            </h1>
+            <div class="flex gap-4 mb-2">
+              <p>{{ $user->following->count() }} Following</p>
+              <p id="UserFollower">{{ $user->followers->count() }} Followers</p>
+            </div>
+            <p class="text-md text-gray-400">{{ $user->detail->gender }}</p>
+            <p>{{ $user->detail->bio }}</p>
+          </div>
         </div>
-        <div class="flex flex-col">
-          <p>{{ $user->gender }}</p>
-          <p>{{ $user->info }}</p>
-        </div>
-        @livewire('follow-count', ['user' => $user])
       </div>
 
       @if (auth()->check())
-        <div class="flex gap-2 items-start justify-center h-9">
-          <div class="relative h-full w-full flex items-center">
-            <button id="btn-dropdown-profile"
-              class="border border-gray-500 rounded-full h-full w-9 flex items-center justify-center hover:bg-gray-500 hover:transition-all hover:duration-150" onclick="return showDropdown('profile')">
-              <img src="/images/menu.svg" alt="menu" width="30">
-            </button>
-            <div id="dropdown-menu-profile"
-              class="absolute bg-ccblack border border-gray-500 right-0 top-0 rounded flex-col w-48 shadow-aroundShadow hidden">
-              @if (auth()->user()->id == $user->id)
-                <a href="/profile/edit"
-                  class="hover:bg-gray-500 hover:transition-all hover:duration-150 p-2 w-full flex items-center gap-2"><img
-                    src="/images/edit.svg" alt="edit" width="25">Edit</a>
-                <form id="logout-form-{{ $user->id }}" action="/logout" method="post" class="flex w-full m-0"
-                  onsubmit="confirmLogout({{ $user->id }})">
-                  @csrf
-                  <button type="submit"
-                    class="p-2 flex hover:bg-gray-500 hover:transition-all hover:duration-150 w-full gap-2"><img
-                      src="/images/logout.svg" alt="logout" width="20">Logout</button>
-                </form>
-              @else
-                @if (auth()->user()->role == 'admin')
-                  @if ($user->role == 'user')
-                    <form id="give-access-form-{{ $user->id }}" action="/give-access/{{ $user->id }}"
-                      method="POST" class="flex items-center m-0"
-                      onsubmit="return confirmGiveAccess({{ $user->id }})">
-                      @csrf
-                      <button
-                        class="flex items-center w-full gap-2 p-2 hover:bg-gray-500 hover:transition-all hover:duration-150"><img
-                          src="/images/admin.svg" alt="admin" width="25">Give admin access</button>
-                    </form>
-                  @else
-                    <form id="delete-access-form-{{ $user->id }}" action="/delete-access/{{ $user->id }}"
-                      method="POST" class="flex w-full items-center m-0"
-                      onsubmit="return confirmDeleteAccess({{ $user->id }})">
-                      @csrf
-                      <button type="submit"
-                        class="flex items-center w-full gap-2 p-2 hover:bg-gray-500 hover:transition-all hover:duration-150"><img
-                          src="/images/admin.svg" alt="admin" width="25">Delete admin access</button>
-                    </form>
-                  @endif
+        <div class="flex items-start justify-center h-9">
+          <div class="h-full w-full flex items-center gap-2">
+            @if (auth()->user()->id != $user->id)
+              <div class="dropdown dropdown-end">
+                <button tabindex="0" role="button"
+                  class="border border-gray-500 rounded-full h-full w-9 flex items-center justify-center hover:bg-primary">
+                  {!! file_get_contents(public_path('images/menu.svg')) !!}
+                </button>
+                <ul class="dropdown-content menu border border-gray-500 w-48 rounded p-0 bg-base-200">
+                  <li><a href="" class="p-2 text-md">{!! file_get_contents(public_path('images/report.svg')) !!} Report Account</a></li>
+                </ul>
+              </div>
+              <button
+                class="border border-gray-500 rounded-full px-4 text-base h-full hover:bg-primary hover:transition-all hover:duration-150"
+                id="followBtn" onclick="follow({{$user->id}})">
+                @if (auth()->user()->isFollowing($user->id))
+                  Unfollow
+                @else
+                  follow
                 @endif
-                <a href=""
-                  class="p-2 hover:bg-gray-500 hover:transition-all hover:duration-150 flex gap-2 items-center"><img
-                    src="/images/report.svg" alt="report" width="25">Laporkan {{ $user->username }}</a>
-              @endif
-            </div>
+              </button>
+            @else
+              <a href="{{ route('edit-profile') }}"
+                class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-primary">{!! file_get_contents(public_path('images/edit.svg')) !!}
+                Edit</a>
+              <form action="{{ route('logout-attempt') }}" method="POST" id="logout-attempt" class="m-0">
+                @csrf
+                <button type="button" onclick="confirmLogout()"
+                  class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-error">
+                  {!! file_get_contents(public_path('images/logout.svg')) !!}Logout
+                </button>
+              </form>
+            @endif
           </div>
-          @if (auth()->user()->id != $user->id)
-            @livewire('follow-button', ['user' => $user])
-          @endif
         </div>
       @endif
-
     </div>
-    @livewire('profile-content', [
-        'username' => $user->username,
-    ])
+
+    <div class="tabs">
+      <input type="radio" name="tab-profile" class="tab text-lg checked:bg-primary" aria-label="Posts" checked>
+      <div class="tab-content border-t-gray-500 py-2">
+        @if ($posts && $posts->count() > 0)
+          @include('components.post', [
+              'posts' => $posts,
+          ])
+        @else
+          <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
+            {!! file_get_contents(public_path('images/not-found.svg')) !!}
+            <h1 class="text-2xl font-bold">
+              No post yet
+            </h1>
+          </div>
+        @endif
+      </div>
+
+      <input type="radio" name="tab-profile" class="tab text-lg checked:bg-primary" aria-label="Likes">
+      <div class="tab-content border-t-gray-500 py-2">
+        @if ($likes && $likes->count() > 0)
+          @include('components.post', ['posts' => $likes])
+        @else
+          <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
+            {!! file_get_contents(public_path('images/not-found.svg')) !!}
+            <h1 class="text-2xl font-bold">
+              no posts have been liked yet
+            </h1>
+          </div>
+        @endif
+      </div>
+    </div>
   </main>
 @endsection
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    function confirmLogout(id) {
-      event.preventDefault();
-      return showConfirm(function() {
-        document.getElementById("logout-form-" + id).submit();
-      }, "you can log back into this account", "Yes, logout from this account")
+  function confirmLogout() {
+    event.preventDefault();
+    return showConfirm(function() {
+      $("#logout-attempt").submit();
+    }, "you can log back into this account", "Yes, logout from this account")
+  }
+
+  function confirmGiveAccess(id) {
+    event.preventDefault();
+    return showConfirm(function() {
+      $("#give-access-form-" + id).submit();
+    }, "Are you sure about giving this account admin access", "Yes, give admin access")
+  }
+
+  function confirmDeleteAccess(id) {
+    event.preventDefault();
+    return showConfirm(function() {
+      $("#delete-access-form-" + id).submit();
+    }, "You can grant access to this account again", "Yes, remove admin access")
+  }
+
+  function onTabPosts() {
+    $('#tabLikes').addClass('hidden')
+    $('#tabPosts').removeClass('hidden')
+    $('#btnPosts').addClass('bg-gray-500')
+    $('#btnLikes').removeClass('bg-gray-500')
+  }
+
+  function onTabLikes() {
+    $('#tabPosts').addClass('hidden')
+    $('#tabLikes').removeClass('hidden')
+    $('#btnLikes').addClass('bg-gray-500')
+    $('#btnPosts').removeClass('bg-gray-500')
+  }
+
+  let loadingFollow = false;
+
+  function follow(id) {
+    if ({{ auth()->check() ? 'false' : 'true' }}) {
+      showAlert('warning', 'You have to log in first')
     }
 
-    function confirmGiveAccess(id) {
-      event.preventDefault();
-      return showConfirm(function() {
-        document.getElementById("give-access-form-" + id).submit();
-      }, "Are you sure about giving this account admin access", "Yes, give admin access")
+    if (loadingFollow) {
+      return
     }
 
-    function confirmDeleteAccess(id) {
-      event.preventDefault();
-      return showConfirm(function() {
-        document.getElementById("delete-access-form-" + id).submit();
-      }, "You can grant access to this account again", "Yes, remove admin access")
-    }
-  })
+    loadingFollow = true
+    $('#followBtn').text('Loading...');
+    
+
+    $.ajax({
+      url: "{{ route('ajax-follow-user') }}",
+      type: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': '{{csrf_token()}}'
+      },
+      data: {
+        id: id
+      },
+      success: function(response) {
+        if (response.status == 'success') {
+          loadingFollow = false;
+          if (response.isFollowing) {
+            $('#followBtn').text('Unfollow');
+          } else {
+            $('#followBtn').text('Follow');
+          }
+
+          $('#UserFollower').text(response.followers + ' Followers');
+        } else {
+          showAlert('error', response.message);
+          console.error(response.message);
+        }
+      }
+    })
+  }
 </script>

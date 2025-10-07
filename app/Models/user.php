@@ -17,6 +17,10 @@ class user extends Authenticatable
         "gender",
     ];
 
+    public function detail() {
+        return $this->hasOne(userDetail::class, 'user_id', 'id');
+    }
+
     public function posts() {
         return $this->hasMany(post::class, 'id_user');
     }
@@ -29,8 +33,16 @@ class user extends Authenticatable
         return $this->belongsToMany(post::class,'likes', 'id_user', 'id_post');
     }
 
+    public function hasLiked($postId) {
+        return $this->likes()->where('id_post', $postId)->exists();
+    }
+
     public function saves() {
         return $this->belongsToMany(post::class,'saveds', 'id_user', 'id_post');
+    }
+
+    public function hasSaved($postId) {
+        return $this->saves()->where('id_post', $postId)->exists();
     }
 
     public function followers() {
@@ -39,5 +51,9 @@ class user extends Authenticatable
 
     public function following() {
         return $this->belongsToMany(user::class, 'followers', 'follower_id', 'user_id');
+    }
+
+    public function isFollowing($userId) {
+        return $this->following()->where('user_id', $userId)->exists();
     }
 }

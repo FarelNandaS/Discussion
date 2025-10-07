@@ -110,7 +110,7 @@ class UserController extends Controller
             'username'=> 'required|string|max:100|unique:users,username,' . $user->id,
             'image'=>'nullable|file|mimes:jpg,jpeg,png,svg',
             'email'=> 'required|string|unique:users,email,' . $user->id,
-            'info'=>'nullable|string|max:255',
+            'bio'=>'nullable|string|max:255',
             'gender'=>'nullable|string|in:Male,Female',
         ]);
 
@@ -119,8 +119,8 @@ class UserController extends Controller
         };
 
         if ($request->hasFile('image')) {
-            if ($user->image && $user->image !== 'default.svg') {
-                $oldImagePath = public_path('assets/profile/' . $user->image);
+            if ($user->detail->image && $user->detail->image !== 'default.svg') {
+                $oldImagePath = public_path('assets/profile/' . $user->detail->image);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }  
@@ -129,12 +129,17 @@ class UserController extends Controller
             $file = $request->file('image');
             $fileName = time() . "." . $file->extension();
             $file->move(public_path("assets/profile"), $fileName);
-            $user->image = $fileName;
+            $user->detail->image = $fileName;
         };
 
-        $user->update($validator->validated());
+        $user->username = $request->username;
+        $user->email = $request->email;
+        $user->detail->bio = $request->bio;
+        $user->detail->gender = $request->gender;
+        $user->detail->save();
+        $user->save();
 
-        return redirect('/' . $user->username)->with('alert', [
+        return redirect()->route('profile', ['username'=>$user->username])->with('alert', [
             'type'=>'success',
             'message'=>'your profile has been successfully updated',
         ]);
@@ -161,7 +166,7 @@ class UserController extends Controller
     public function giveAccess($id) {
         $user = User::find($id);
 
-        $user->role = 'admin';
+        $user->assignRole('Admin');
         $user->save();
 
         return redirect()->back()->with('alert', [
@@ -173,12 +178,32 @@ class UserController extends Controller
     public function deleteAccess($id) {
         $user = User::find($id);
 
-        $user->role = 'user';
+        $user->removeRole('Admin');
         $user->save();
 
                 return redirect()->back()->with('alert', [
             'type'=>'success',
             'message'=>'successfully removed access',
         ]);
+    }
+
+    public function followUser(Request $request) {
+        try {
+            $user = user::findOrFail($request->id);
+            $isFollowing = Auth::user()->isFollowing($user->id);
+
+            if ($isFollowing) {
+                Auth::user()->following()->detach($user->id);
+            } else {
+                Auth::user()->following()->attach($user->id);
+            }
+
+            $followers = $user->followers->count();
+            $isFollowing = Auth::user()->isFollowing($user->id);
+
+            return response()->json(array('status'=>'success', 'followers'=>$followers, 'isFollowing'=>$isFollowing));
+        } catch (\Exception $e) {
+            return response()->json(array('status'=>'error', 'message'=>$e->getMessage()));
+        }
     }
 }

@@ -9,6 +9,7 @@
         "php": "^8.2",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.31",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.6",
         "spatie/laravel-permission": "^6.21"

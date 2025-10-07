@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -81,9 +82,9 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $post = post::find($id);
+        $post = post::find($request->id);
 
         if (auth()->id() != $post->id_user && auth()->user()->role != 'admin') {
             return abort(403);
@@ -95,5 +96,39 @@ class PostController extends Controller
             'type'=>'success',
             'message'=>'successfully deleted the post'
         ]);
+    }
+
+    public function savePost(Request $request) {
+        try {
+            $user = Auth::user();
+            $post = post::findOrFail($request->id);
+
+            if ($post->isSavedByUser()) {
+                $post->saves()->where('id_user', $user->id)->delete();
+            } else {
+                $post->saves()->create(['id_user'=>$user->id]);
+            }
+
+            return response()->json(array('status'=>'success', 'message'=>'success to save the post', 'saved'=>$post->isSavedByUser()));
+        } catch (\Exception $e) {
+            return response()->json(array('status'=>'error', 'message'=>$e->getMessage()));
+        }
+    }
+
+    public function likePost(Request $request) {
+        try {
+            $user = Auth::user();
+            $post = post::findOrFail($request->id);
+
+            if ($post->isLikedByUser()) {
+                $post->likes()->where('id_user', $user->id)->delete();
+            } else {
+                $post->likes()->create(['id_user'=>$user->id]);
+            }
+
+            return response()->json(array('status'=>'success', 'message'=>'success to like the post', 'liked'=>$post->isLikedByUser(), 'count'=>$post->likes->count()));
+        } catch (\Exception $e) {
+            return response()->json(array('status'=>'error', 'message'=>$e->getMessage()));
+        }
     }
 }

@@ -27,7 +27,7 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'comment'=>'required|string',
@@ -42,7 +42,7 @@ class CommentController extends Controller
 
         comment::create([
             'id_user'=>auth()->user()->id,
-            'id_post'=>$id,
+            'id_post'=>$request->id,
             'comment'=> $request->comment,
         ]);
 
@@ -79,9 +79,9 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $comment = comment::find($id);
+        $comment = comment::find($request->id);
 
         if (auth()->id() != $comment->id_user && auth()->user()->role != 'admin') {
             return abort(403);

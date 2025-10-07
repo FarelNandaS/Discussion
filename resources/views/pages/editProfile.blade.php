@@ -7,38 +7,49 @@
       @csrf
       <div class="flex items-center justify-center gap-4 w-full">
         <div class="relative">
-          <label for="image" class="cursor-pointer">
-            <img src="{{ $user->image ? '/assets/profile/' . $user->image : '/assets/profile/default.svg' }}"
-              alt="Profile Picture" width="100" height="100" class="object-cover rounded-full" id="imagePreview">
-              <span class="absolute inset-0 bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-all"></span>
+          <label for="image" class="cursor-pointer block">
+            <div class="w-[100px] h-[100px] overflow-hidden rounded-full">
+              @if (isset($user->detail->image))
+                {{-- Tampilkan foto user --}}
+                <img src="/assets/profile/{{ $user->detail->image }}" alt="Profile Picture"
+                  class="object-cover w-full h-full rounded-full" id="imagePreview">
+              @else
+                {{-- Tampilkan default SVG --}}
+                <div id="defaultSvg">
+                  {!! file_get_contents(public_path('assets/profile/detailDefault.svg')) !!}
+                </div>
+                {{-- Kita siapkan img kosong untuk preview upload nanti --}}
+                <img id="imagePreview" class="hidden object-cover w-full h-full rounded-full" alt="Preview">
+              @endif
+            </div>
+            <span class="absolute inset-0 bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-all"></span>
           </label>
           <input type="file" name="image" id="image" class="hidden">
         </div>
         <div class="flex flex-col w-full">
           <label for="username">Username</label>
-          <input type="text" name="username" id="username" value="{{ $user->username }}"
-            class="bg-transparent border-b">
+          <input type="text" name="username" id="username" value="{{ $user->username }}" class="input w-full" placeholder="Enter username here">
         </div>
       </div>
       <div class="flex flex-col">
         <label for="email">Email</label>
-        <input type="text" name="email" id="email" value="{{ $user->email }}"
-          class="bg-transparent border-b min-w-[100px]">
+        <input type="text" name="email" id="email" value="{{ $user->email }}" class="input w-full" placeholder="Enter email here">
       </div>
       <div class="flex flex-col">
-        <label for="info">Bio</label>
-        <input type="text" name="info" id="info" value="{{ $user->info }}" class="bg-transparent border-b">
+        <label for="bio">Bio</label>
+        <input type="text" name="bio" id="bio" value="{{ $user->detail->bio }}" class="input w-full"
+          placeholder="Enter bio here">
       </div>
       <div class="flex flex-col">
         <label for="gender">Gender</label>
-        <select name="gender" id="gender" class="bg-transparent border-b text-ccwhite" class="bg-transparent">
-          <option value="" class="text-ccblack">-- Pilih --</option>
-          <option value="Male" class="text-ccblack" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male</option>
-          <option value="Female" class="text-ccblack" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female</option>
+        <select name="gender" id="gender" class="select w-full" aria-placeholder="Select gender here">
+          <option value="">Not Set</option>
+          <option value="Male" {{ $user->detail->gender == 'Male' ? 'selected' : '' }}>Male</option>
+          <option value="Female" {{ $user->detail->gender == 'Female' ? 'selected' : '' }}>Female</option>
         </select>
       </div>
       <button type="submit"
-        class="bg-light text-ccblack p-2 rounded duration-150 transition-all hover:bg-primary hover:text-ccwhite hover:duration-150 hover:transition-all">Update</button>
+        class="btn btn-primary duration-150 transition-all hover:btn-secondary hover:duration-150 hover:transition-all">Update</button>
     </form>
   </main>
 
@@ -48,7 +59,14 @@
       if (file) {
         const reader = new FileReader();
         reader.onload = function(evt) {
-          document.getElementById('imagePreview').src = evt.target.result;
+          // Hilangkan SVG default kalau ada
+          const defaultSvg = document.getElementById('defaultSvg');
+          if (defaultSvg) defaultSvg.style.display = 'none';
+
+          // Tampilkan img preview
+          const imgPreview = document.getElementById('imagePreview');
+          imgPreview.classList.remove('hidden');
+          imgPreview.src = evt.target.result;
         }
         reader.readAsDataURL(file);
       }

@@ -1,31 +1,40 @@
-<aside class="w-[13%] fixed top-0 left-0 h-full border-r border-gray-600 bg-ccwhite dark:bg-ccblack">
+<div class="menu p-0 w-52 min-h-screen bg-base-100 fixed">
   <h1 class="text-2xl font-bold flex justify-center items-center m-4">
-    <a href="/" class="">Discussion</a>
+    <a href="{{ route('home') }}">Let's Discuss</a>
   </h1>
 
   <ul class="flex flex-col mt-6">
     <li>
-      <a href="/" class="flex items-center gap-2 hover:bg-gray-500/30 p-2 pl-4 rounded">
-        <img src="/Images/home.svg" alt="Home" width="20"> Home
+      <a href="{{ route('home') }}" class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
+        {!! file_get_contents(public_path('images/home.svg')) !!} Home
       </a>
     </li>
     <li>
-      <a href="/newest" class="flex items-center gap-2 hover:bg-gray-500/30 p-2 pl-4 rounded">
-        <img src="/Images/new.svg" alt="Newest" width="20"> Newest
+      <a href="{{ route('newest') }}" class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
+        {!! file_get_contents(public_path('images/new.svg')) !!} Newest
       </a>
     </li>
     <li>
-      <a href="/saved" class="flex items-center gap-2 hover:bg-gray-500/30 p-2 pl-4 rounded">
-        <img src="/Images/saved.svg" alt="Saved" width="20"> Saved
+      <a href="{{ route('saved') }}" class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
+        {!! file_get_contents(public_path('svg/sidebar/saved.svg')) !!} Saved
       </a>
     </li>
   </ul>
 
   <ul class="mt-10">
     <li>
-      <a href="/post" class="flex items-center gap-2 hover:bg-gray-500/30 p-2 pl-4 rounded">
-        <img src="/Images/add.svg" alt="Add" width="20"> Add Post
+      <a href="{{ route('post-add') }}"
+        class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
+        {!! file_get_contents(public_path('images/add.svg')) !!} Add Post
       </a>
     </li>
+    @if (auth()->check() && auth()->user()->hasRole('Admin'))
+      <li>
+        <a href="{{ route('post-add') }}"
+          class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
+          {!! file_get_contents(public_path('images/dashboard.svg')) !!} Dashboard
+        </a>
+      </li>
+    @endif
   </ul>
-</aside>
+</div>

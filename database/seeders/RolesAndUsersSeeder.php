@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\user;
+use App\Models\userDetail;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -28,6 +29,10 @@ class RolesAndUsersSeeder extends Seeder
                 'username'=>$role,
                 'email'=>$role . '@example.test',
                 'password'=>Hash::make('password'),
+            ]);
+
+            userDetail::create([
+                'user_id'=>$user->id,
             ]);
 
             $user->assignRole($role);

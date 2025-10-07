@@ -1,37 +1,63 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 //get routes
-Route::get('/', [IndexController::class, "home"]);
-Route::get('/login', [IndexController::class, 'login']);
-Route::get('/register', [IndexController::class, 'register']);
-Route::get('/search', [IndexController::class, 'search']);
-Route::get('/newest', [IndexController::class, 'newest']);
-Route::get('/saved', [IndexController::class, 'saved']);
-Route::get('/post', [IndexController::class, 'post']);
-Route::get('/post/detail/{id}', [IndexController::class, 'DetailPost']);
-Route::get('/profile/edit', [IndexController::class,'EditProfile']);
-Route::get('/{username}', [IndexController::class, 'Profile']);
+Route::get('/', [IndexController::class, "home"])->name('home');
+
+//route auth
+Route::get('/login', [IndexController::class, 'login'])->name('login');
+Route::get('/register', [IndexController::class, 'register'])->name('register');
+
+//route auth google
+Route::middleware('web')->group(function () {
+    Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth-google');
+    Route::get('/auth/google/callback', [AuthController::class, 'handlerCallback'])->name('auth-google-callback');
+});
+
+//route index
+Route::get('/search', [IndexController::class, 'search'])->name('search');
+Route::get('/newest', [IndexController::class, 'newest'])->name('newest');
+Route::get('/saved', [IndexController::class, 'saved'])->name('saved');
+
+//route post
+Route::get('/post/add', [IndexController::class, 'post'])->name('post-add');
+Route::get('/post/detail/{id}', [IndexController::class, 'DetailPost'])->name('detail-post');
+
+//route profile
+Route::get('/profile/edit', [IndexController::class, 'EditProfile'])->name('edit-profile');
+Route::get('/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
+
+//route dashboard
+Route::get('/dashboard', [IndexController::class, 'dashboard'])->name('dashboard');
 
 //crud login routes
-Route::post("/login/form", [UserController::class, "index"]);
-Route::post("/register/form", [UserController::class, "create"]);
-Route::post('/logout', [UserController::class, "logout"]);
+Route::post("/login", [UserController::class, "index"])->name('login-attempt');
+Route::post("/register", [UserController::class, "create"])->name('register-attempt');
+Route::post('/logout', [UserController::class, "logout"])->name('logout-attempt');
 
 //crud profile routes
-Route::post("/profile/update", [UserController::class,"update"]);
-Route::post("/give-access/{id}", [UserController::class,"giveAccess"]);
-Route::post("/delete-access/{id}", [UserController::class,"deleteAccess"]);
+Route::post("/profile/update", [UserController::class, "update"])->name('profile-update');
+Route::post("/give-access/{id}", [UserController::class, "giveAccess"])->name('give-access');
+Route::post("/delete-access/{id}", [UserController::class, "deleteAccess"])->name('delete-access');
 
 //crud post routes
-Route::post("/post/add", [PostController::class, "store"]);
-Route::post("/post/delete/{id}", [PostController::class, "destroy"]);
+Route::post("/post/save", [PostController::class, "store"])->name('post-save');
+Route::post("/post/delete", [PostController::class, "destroy"])->name('post-delete');
 
 //crud comment routes
-Route::post('/comment/add/{id}', [CommentController::class, 'store']);
-Route::post('/comment/delete/{id}', [CommentController::class, 'destroy']);
+Route::post('/comment/save', [CommentController::class, 'store'])->name('comment-save');
+Route::post('/comment/delete', [CommentController::class, 'destroy'])->name('comment-delete');
+
+//ajax 
+Route::prefix('ajax')->group(function () {
+    Route::post('follow-user', [UserController::class, 'followUser'])->name('ajax-follow-user');
+    Route::post('like-post', [PostController::class, 'likePost'])->name('ajax-like-post');
+    Route::post('save-post', [PostController::class, 'savePost'])->name('ajax-save-post');
+});
