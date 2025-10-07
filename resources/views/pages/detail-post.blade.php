@@ -112,6 +112,8 @@
 
       loadingSave = true
 
+      $('#btnSave').empty().html('<span class="loading loading-spinner loading-md"></span>');
+
       $.ajax({
         url: "{{ route('ajax-save-post') }}",
         type: 'POST',
@@ -149,6 +151,8 @@
       }
 
       loadingLike = true
+
+      $('#btnLike').empty().html('<span class="loading loading-spinner loading-md"></span>');
 
       $.ajax({
         url: "{{ route('ajax-like-post') }}",

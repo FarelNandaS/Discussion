@@ -116,7 +116,7 @@ class IndexController extends Controller
     public function saved()
     {
         $user = Auth::user();
-        $posts = $user->saves->map->post;
+        $posts = $user->saves;
 
         return view('pages.saved', [
             'posts' => $posts,

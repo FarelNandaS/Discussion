@@ -10,28 +10,23 @@
       <h1 class="text-2xl">Add post</h1>
       <div class="w-full flex flex-col">
         <label for="title">Title</label>
-        <textarea type="text" name="title" id="title"
-          class="rounded bg-ccblack w-full overflow-hidden resize-none p-2 border autoWrap" rows="1"></textarea>
+        <input type="text" name="title" id="title" class="input w-full" placeholder="Enter Title Here">
       </div>
       <div class="w-full flex flex-col">
         <label for="post">Post</label>
         <textarea type="text" name="post" id="post"
-          class="rounded bg-ccblack w-full overflow-hidden resize-none p-2 border autoWrap" rows="3"></textarea>
+          class="textarea w-full resize-none autoWrap" rows="3" placeholder="Enter Post Here"></textarea>
       </div>
-      <button type="button" onclick="validate()" class="text-xl text-black bg-light w-[100px] p-2 rounded hover:bg-darker hover:text-ccwhite hover:transition-all hover:duration-150">Post</button>
+      <button type="button" onclick="validate()" class="btn btn-primary">Post</button>
     </form>
   </main>
 
   <script>
-    const textarea = document.getElementById('title');
-    textarea.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = this.scrollHeight + 'px';
-    });
-    const textarea2 = document.getElementById('post');
-    textarea2.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = this.scrollHeight + 'px';
+    document.querySelectorAll('.autoWrap').forEach(textarea => {
+      textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+      });
     });
     
     function validate() {
