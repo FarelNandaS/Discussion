@@ -24,7 +24,7 @@
               <p>{{ $user->following->count() }} Following</p>
               <p id="UserFollower">{{ $user->followers->count() }} Followers</p>
             </div>
-            <p class="text-md text-gray-400">{{ $user->detail->gender }}</p>
+            <p class="text-md text-gray-400 mb-2">{{ $user->detail->gender }}</p>
             <p>{{ $user->detail->bio }}</p>
           </div>
         </div>

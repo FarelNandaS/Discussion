@@ -54,13 +54,6 @@ class IndexController extends Controller
 
     public function EditProfile()
     {
-        if (!auth()->check()) {
-            return redirect()->intended('/login')->with('alert', [
-                'type' => 'warning',
-                'message' => 'you are not logged in yet',
-            ]);
-        }
-
         $user = auth()->user();
         return view('pages.editProfile', [
             'user' => $user,
@@ -69,13 +62,6 @@ class IndexController extends Controller
 
     public function post()
     {
-        if (!auth()->check()) {
-            return redirect('/login')->with('alert', [
-                'type' => 'warning',
-                'message' => 'you are not logged in yet',
-            ]);
-        }
-
         return view('pages.post');
     }
 
@@ -129,13 +115,6 @@ class IndexController extends Controller
 
     public function saved()
     {
-        if (!Auth::check()) {
-            return redirect('/login')->with('alert', [
-                'type' => 'warning',
-                'message' => 'you are not logged in yet'
-            ]);
-        }
-
         $user = Auth::user();
         $posts = $user->saves->map->post;
 
