@@ -25,7 +25,7 @@
           @foreach ($users as $user)
             <div class="py-4 border-b border-gray-500">
               <a class="flex gap-2 items-center hover:text-primary hover:transition-all hover:duration-150"
-                href="/profile/{{ $user->username }}">
+                href="{{ route('profile', ['username'=>$user->username]) }}">
                 <span class="w-[30px] h-[30px] rounded-full overflow-hidden">
                   @if ($user->detail->image)
                     <img src="/assets/profile/{{ $user->detail->image }}" alt="profile picture"

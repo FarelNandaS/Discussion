@@ -6,7 +6,7 @@
     </div>
     <h5 class="line-clamp-3">{!! nl2br(e($post->post)) !!}</h5>
     <p class="w-full flex justify-end items-center text-sm gap-x-2">
-      <a href="/profile/{{ $post->user->username }}"
+      <a href="{{ route('profile', ['username'=>$post->user->username]) }}"
         class="hover:text-primary hover:transition-all hover:duration-150 flex gap-2 justify-center items-center">
         <span class="w-[30px] h-[30px] flex-grow-0 flex-shrink-0 overflow-hidden">
           @if (isset($post->user->detail->image))

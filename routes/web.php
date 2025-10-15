@@ -22,9 +22,6 @@ Route::get('/newest', [IndexController::class, 'newest'])->name('newest');
 //route post
 Route::get('/post/detail/{id}', [IndexController::class, 'DetailPost'])->name('detail-post');
 
-//route profile
-Route::get('/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
-
 Route::middleware('auth.alert')->group(function () {
     //route saved
     Route::get('/saved', [IndexController::class, 'saved'])->name('saved');
@@ -51,6 +48,9 @@ Route::middleware('auth.alert')->group(function () {
     Route::post('/comment/save', [CommentController::class, 'store'])->name('comment-save');
     Route::post('/comment/delete', [CommentController::class, 'destroy'])->name('comment-delete');
 });
+
+//route profile
+Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
 
 //route auth google
 Route::middleware('web')->group(function () {
