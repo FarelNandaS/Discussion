@@ -22,6 +22,9 @@ Route::get('/newest', [IndexController::class, 'newest'])->name('newest');
 //route post
 Route::get('/post/detail/{id}', [IndexController::class, 'DetailPost'])->name('detail-post');
 
+//route profile
+Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
+
 Route::middleware('auth.alert')->group(function () {
     //route saved
     Route::get('/saved', [IndexController::class, 'saved'])->name('saved');
@@ -30,7 +33,7 @@ Route::middleware('auth.alert')->group(function () {
     Route::get('/post/add', [IndexController::class, 'post'])->name('post-add');
 
     //route profile
-    Route::get('/profile/edit', [IndexController::class, 'EditProfile'])->name('edit-profile');
+    Route::get('/user/edit', [IndexController::class, 'EditProfile'])->name('edit-profile');
 
     //route dashboard
     Route::get('/dashboard', [IndexController::class, 'dashboard'])->name('dashboard');
@@ -48,9 +51,6 @@ Route::middleware('auth.alert')->group(function () {
     Route::post('/comment/save', [CommentController::class, 'store'])->name('comment-save');
     Route::post('/comment/delete', [CommentController::class, 'destroy'])->name('comment-delete');
 });
-
-//route profile
-Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
 
 //route auth google
 Route::middleware('web')->group(function () {

@@ -32,7 +32,7 @@
   {{-- Profile/Login --}}
   <ul class="flex-none gap-4">
     @auth
-      <li class="text-lg"><a href="/profile/{{ auth()->user()->username }}" class="hover:underline">Profile</a></li>
+      <li class="text-lg"><a href="{{ route('profile', ['username'=>auth()->user()->username]) }}" class="hover:underline">Profile</a></li>
     @else
       <li class="text-lg"><a href="/login" class="hover:underline">Login</a></li>
     @endauth
