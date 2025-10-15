@@ -7,7 +7,7 @@
         <div class="flex flex-col lg:flex-row gap-4">
           <div class="w-[100px] h-[100px] rounded-full overflow-hidden">
             @if (isset($user->detail->image))
-              <img src="/assets/profile/{{ $user->detail->image }}" alt="profile image" width="100" height="100"
+              <img src="{{ asset('storage/profile/' . $user->detail->image ) }}" alt="profile image" width="100" height="100"
                 class="rounded-full object-cover w-full h-full">
             @else
               {!! file_get_contents(public_path('assets/profile/detailDefault.svg')) !!}

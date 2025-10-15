@@ -5,7 +5,7 @@
         class="flex items-center gap-2 hover:text-primary hover:transition-all hover:duration-150">
         @if (isset($comment->user->detail->image))
         <span class="w-[50px] h-[50px] overflow-hidden rounded-full">
-          <img src="/assets/profile/{{ $comment->user->detail->image }}" alt="Profile picture" class="rounded-full object-cover w-full h-full">
+          <img src="{{ asset('storage/profile/' . $comment->user->detail->image ) }}" alt="Profile picture" class="rounded-full object-cover w-full h-full">
         </span>
         @else
           {!! file_get_contents(public_path('assets/profile/default.svg')) !!}

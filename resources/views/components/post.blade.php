@@ -10,7 +10,7 @@
         class="hover:text-primary hover:transition-all hover:duration-150 flex gap-2 justify-center items-center">
         <span class="w-[30px] h-[30px] flex-grow-0 flex-shrink-0 overflow-hidden">
           @if (isset($post->user->detail->image))
-            <img class="rounded-full object-cover w-full h-full" src="/assets/profile/{{ $post->user->detail->image }}"
+            <img class="rounded-full object-cover w-full h-full" src="{{ asset('storage/profile/' . $post->user->detail->image ) }}"
               alt="Profile picture" width="30">
           @else
             {!! file_get_contents(public_path('assets/profile/default.svg')) !!}

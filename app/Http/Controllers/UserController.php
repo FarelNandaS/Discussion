@@ -120,7 +120,7 @@ class UserController extends Controller
 
         if ($request->hasFile('image')) {
             if ($user->detail->image && $user->detail->image !== 'default.svg') {
-                $oldImagePath = public_path('assets/profile/' . $user->detail->image);
+                $oldImagePath = public_path('storage/profile/' . $user->detail->image);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }  
@@ -128,7 +128,7 @@ class UserController extends Controller
 
             $file = $request->file('image');
             $fileName = time() . "." . $file->extension();
-            $file->move(public_path("assets/profile"), $fileName);
+            $file->move(public_path("storage/profile"), $fileName);
             $user->detail->image = $fileName;
         };
 

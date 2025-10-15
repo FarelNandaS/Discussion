@@ -22,3 +22,4 @@ yarn-error.log
 /.vscode
 /.zed
 googleAuth.json
+/public/storage
