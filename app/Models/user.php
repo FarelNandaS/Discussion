@@ -44,16 +44,4 @@ class user extends Authenticatable
     public function hasSaved($postId) {
         return $this->saves()->where('id_post', $postId)->exists();
     }
-
-    public function followers() {
-        return $this->belongsToMany(user::class, 'followers', 'user_id', 'follower_id');
-    }
-
-    public function following() {
-        return $this->belongsToMany(user::class, 'followers', 'follower_id', 'user_id');
-    }
-
-    public function isFollowing($userId) {
-        return $this->following()->where('user_id', $userId)->exists();
-    }
 }

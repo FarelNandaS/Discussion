@@ -20,10 +20,6 @@
                 {!! file_get_contents(public_path('images/adminBig.svg')) !!}
               @endif
             </h1>
-            <div class="flex gap-4 mb-2">
-              <p>{{ $user->following->count() }} Following</p>
-              <p id="UserFollower">{{ $user->followers->count() }} Followers</p>
-            </div>
             <p class="text-md text-gray-400 mb-2">{{ $user->detail->gender }}</p>
             <p>{{ $user->detail->bio }}</p>
           </div>
@@ -43,15 +39,6 @@
                   <li><a href="" class="p-2 text-md">{!! file_get_contents(public_path('images/report.svg')) !!} Report Account</a></li>
                 </ul>
               </div>
-              <button
-                class="border border-gray-500 rounded-full px-4 text-base h-full hover:bg-primary hover:transition-all hover:duration-150"
-                id="followBtn" onclick="follow({{$user->id}})">
-                @if (auth()->user()->isFollowing($user->id))
-                  Unfollow
-                @else
-                  follow
-                @endif
-              </button>
             @else
               <a href="{{ route('edit-profile') }}"
                 class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-primary">{!! file_get_contents(public_path('images/edit.svg')) !!}
@@ -137,47 +124,5 @@
     $('#tabLikes').removeClass('hidden')
     $('#btnLikes').addClass('bg-gray-500')
     $('#btnPosts').removeClass('bg-gray-500')
-  }
-
-  let loadingFollow = false;
-
-  function follow(id) {
-    if ({{ auth()->check() ? 'false' : 'true' }}) {
-      showAlert('warning', 'You have to log in first')
-    }
-
-    if (loadingFollow) {
-      return
-    }
-
-    loadingFollow = true
-    $('#followBtn').text('Loading...');
-    
-
-    $.ajax({
-      url: "{{ route('ajax-follow-user') }}",
-      type: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': '{{csrf_token()}}'
-      },
-      data: {
-        id: id
-      },
-      success: function(response) {
-        if (response.status == 'success') {
-          loadingFollow = false;
-          if (response.isFollowing) {
-            $('#followBtn').text('Unfollow');
-          } else {
-            $('#followBtn').text('Follow');
-          }
-
-          $('#UserFollower').text(response.followers + ' Followers');
-        } else {
-          showAlert('error', response.message);
-          console.error(response.message);
-        }
-      }
-    })
   }
 </script>

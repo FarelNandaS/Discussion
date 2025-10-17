@@ -186,24 +186,4 @@ class UserController extends Controller
             'message'=>'successfully removed access',
         ]);
     }
-
-    public function followUser(Request $request) {
-        try {
-            $user = user::findOrFail($request->id);
-            $isFollowing = Auth::user()->isFollowing($user->id);
-
-            if ($isFollowing) {
-                Auth::user()->following()->detach($user->id);
-            } else {
-                Auth::user()->following()->attach($user->id);
-            }
-
-            $followers = $user->followers->count();
-            $isFollowing = Auth::user()->isFollowing($user->id);
-
-            return response()->json(array('status'=>'success', 'followers'=>$followers, 'isFollowing'=>$isFollowing));
-        } catch (\Exception $e) {
-            return response()->json(array('status'=>'error', 'message'=>$e->getMessage()));
-        }
-    }
 }

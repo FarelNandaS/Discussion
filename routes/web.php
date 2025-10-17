@@ -65,7 +65,6 @@ Route::post('/logout', [UserController::class, "logout"])->name('logout-attempt'
 
 //ajax 
 Route::prefix('ajax')->group(function () {
-    Route::post('follow-user', [UserController::class, 'followUser'])->name('ajax-follow-user');
     Route::post('like-post', [PostController::class, 'likePost'])->name('ajax-like-post');
     Route::post('save-post', [PostController::class, 'savePost'])->name('ajax-save-post');
 });
