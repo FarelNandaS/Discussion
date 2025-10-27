@@ -16,7 +16,7 @@
     </li>
     <li>
       <a href="{{ route('saved') }}" class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
-        {!! file_get_contents(public_path('svg/sidebar/saved.svg')) !!} Saved
+        {!! file_get_contents(public_path('Images/savedSidebar.svg')) !!} Saved
       </a>
     </li>
   </ul>
@@ -36,5 +36,11 @@
         </a>
       </li>
     @endif
+    <li>
+      <a href="{{ route('settings') }}"
+        class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg hover:bg-primary">
+        {!! file_get_contents(public_path('images/setting.svg')) !!} Settings
+      </a>
+    </li>
   </ul>
 </div>

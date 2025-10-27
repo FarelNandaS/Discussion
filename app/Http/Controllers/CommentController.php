@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\comment;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -40,7 +40,7 @@ class CommentController extends Controller
             ]);
         }
 
-        comment::create([
+        Comment::create([
             'id_user'=>auth()->user()->id,
             'id_post'=>$request->id,
             'comment'=> $request->comment,
@@ -81,7 +81,7 @@ class CommentController extends Controller
      */
     public function destroy(Request $request)
     {
-        $comment = comment::find($request->id);
+        $comment = Comment::find($request->id);
 
         if (auth()->id() != $comment->id_user && auth()->user()->role != 'admin') {
             return abort(403);

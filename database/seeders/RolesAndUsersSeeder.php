@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\user;
-use App\Models\userDetail;
+use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,15 +23,15 @@ class RolesAndUsersSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            Role::create(['name'=>$role]);
+            Role::create(['name'=>$role, 'guard_name' => 'web',]);
 
-            $user = user::create([
+            $user = User::create([
                 'username'=>$role,
                 'email'=>$role . '@example.test',
                 'password'=>Hash::make('password'),
             ]);
 
-            userDetail::create([
+            UserDetail::create([
                 'user_id'=>$user->id,
             ]);
 

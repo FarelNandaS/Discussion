@@ -1,20 +1,21 @@
 @extends('layout.default')
-@section('title', 'Add Post')
+@section('title', 'Edit Post')
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)]  p-4">
     <form action="{{route('post-save')}}" method="post" id="sendForm" class="w-full h-auto flex flex-col justify-start items-start gap-4 p-4 rounded">
       @csrf
-      <h1 class="text-2xl">Add post</h1>
+      <input type="hidden" value="{{ $post->id }}" name="id">
+      <h1 class="text-2xl">Edit post</h1>
       <div class="w-full flex flex-col">
         <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="input w-full" placeholder="Enter Title Here">
+        <input type="text" name="title" id="title" class="input w-full" placeholder="Enter Title Here" value="{{ $post->title }}">
       </div>
       <div class="w-full flex flex-col">
         <label for="content">Content</label>
         <textarea type="text" name="content" id="content"
-          class="textarea w-full resize-none autoWrap" rows="3" placeholder="Enter Content Here"></textarea>
+          class="textarea w-full resize-none autoWrap" rows="3" placeholder="Enter Content Here">{{ $post->content }}</textarea>
       </div>
-      <button type="button" onclick="validate()" class="btn btn-primary">Post</button>
+      <button type="button" onclick="validate()" class="btn btn-primary">Update Post</button>
     </form>
   </main>
 

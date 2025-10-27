@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\comment;
+use App\Models\Comment;
 use App\Models\post;
 use App\Models\user;
 use Auth;
@@ -65,10 +65,16 @@ class IndexController extends Controller
         return view('pages.post');
     }
 
+    public function postEdit($id) {
+        $post = post::find($id);
+
+        return view('pages.edit-post', ['post'=>$post]);
+    }
+
     public function DetailPost($id)
     {
         $post = Post::find($id);
-        $comments = comment::where('id_post', '=', $post->id)->latest()->get();
+        $comments = Comment::where('id_post', '=', $post->id)->latest()->get();
         if (isset($post)) {
             return view('pages.detail-post', [
                 'post' => $post,
@@ -125,5 +131,9 @@ class IndexController extends Controller
 
     public function dashboard() {
         return view();
+    }
+
+    public function settings() {
+        return view('pages.settings');
     }
 }

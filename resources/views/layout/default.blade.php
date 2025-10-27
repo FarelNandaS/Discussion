@@ -8,7 +8,7 @@
   <link rel="shortcut icon" href="{{ asset('images/logo_primary.png') }}" type="image/png">
   <title>@yield('title', 'My App')</title>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
-  @livewireStyles
+  @yield('script')
 </head>
 
 <body class="flex min-h-screen">
@@ -43,7 +43,6 @@
   </div>
 
   {{-- Scripts --}}
-  @livewireScripts
   <script>
     @if (session('alert'))
       showAlert("{{ session('alert')['type'] }}", "{{ session('alert')['message'] }}")

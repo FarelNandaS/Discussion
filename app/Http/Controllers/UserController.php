@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\user;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,7 +29,7 @@ class UserController extends Controller
         $remember = $request->has('remeber');
 
         if (Auth::attempt($credential, $remember)) {
-            $user = user::where('email', '=', $request->email)->first();
+            $user = User::where('email', '=', $request->email)->first();
 
             Auth::login($user, $request->filled('remember'));
 
@@ -63,7 +63,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', $validator->errors());
         }
 
-        user::create([
+        User::create([
             'username'=>$request->username,
             'email'=>$request->email,
             'password'=>Hash::make($request->password),
@@ -86,7 +86,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(user $user)
+    public function show(User $user)
     {
         //
     }
@@ -94,7 +94,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(user $user)
+    public function edit(User $user)
     {
         //
     }
@@ -102,7 +102,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, user $user)
+    public function update(Request $request, User $user)
     {
         $user = Auth::user();
 
@@ -148,7 +148,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(user $user)
+    public function destroy(User $user)
     {
         //
     }

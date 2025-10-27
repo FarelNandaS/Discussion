@@ -8,7 +8,7 @@
           <img src="{{ asset('storage/profile/' . $comment->user->detail->image ) }}" alt="Profile picture" class="rounded-full object-cover w-full h-full">
         </span>
         @else
-          {!! file_get_contents(public_path('assets/profile/default.svg')) !!}
+          {!! file_get_contents(public_path('Images/default.svg')) !!}
         @endif
         {{ $comment->user->username }}
       </a>

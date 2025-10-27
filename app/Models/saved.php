@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class saved extends Model
+class Saved extends Model
 {
     protected $fillable = [
         'id_user',
@@ -12,10 +12,10 @@ class saved extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(user::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user');
     }
 
     public function post() {
-        return $this->belongsTo(post::class, 'id_post');
+        return $this->belongsTo(Post::class, 'id_post');
     }
 }

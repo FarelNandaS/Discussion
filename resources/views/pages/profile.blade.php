@@ -10,7 +10,7 @@
               <img src="{{ asset('storage/profile/' . $user->detail->image ) }}" alt="profile image" width="100" height="100"
                 class="rounded-full object-cover w-full h-full">
             @else
-              {!! file_get_contents(public_path('assets/profile/detailDefault.svg')) !!}
+              {!! file_get_contents(public_path('Images/detailDefault.svg')) !!}
             @endif
           </div>
           <div class="flex flex-col justify-center">

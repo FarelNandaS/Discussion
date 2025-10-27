@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class user extends Authenticatable
+class User extends Authenticatable
 {
     use HasRoles;
 
+    protected $guard_name = 'web';
     protected $fillable = [
         "username",
         "email",
@@ -18,19 +19,19 @@ class user extends Authenticatable
     ];
 
     public function detail() {
-        return $this->hasOne(userDetail::class, 'user_id', 'id');
+        return $this->hasOne(UserDetail::class, 'user_id', 'id');
     }
 
     public function posts() {
-        return $this->hasMany(post::class, 'id_user');
+        return $this->hasMany(Post::class, 'id_user');
     }
 
     public function comments() {
-        return $this->hasMany(comment::class,'id_user');
+        return $this->hasMany(Comment::class,'id_user');
     }
 
     public function likes() {
-        return $this->belongsToMany(post::class,'likes', 'id_user', 'id_post');
+        return $this->belongsToMany(Post::class,'likes', 'id_user', 'id_post');
     }
 
     public function hasLiked($postId) {
@@ -38,7 +39,7 @@ class user extends Authenticatable
     }
 
     public function saves() {
-        return $this->belongsToMany(post::class,'saveds', 'id_user', 'id_post');
+        return $this->belongsToMany(Post::class,'saveds', 'id_user', 'id_post');
     }
 
     public function hasSaved($postId) {

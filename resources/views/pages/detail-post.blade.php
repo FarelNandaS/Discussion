@@ -13,7 +13,7 @@
             </button>
             <ul class="dropdown-content menu border border-gray-500 w-48 rounded p-0 bg-base-200">
               <li>
-                <a href="/post/edit/{{ $post->id }}"
+                <a href="{{ route('post-edit', ['id'=>$post->id]) }}"
                   class="hover:bg-gray-500 hover:transition-all hover:duration-150 p-2 w-full items-center gap-2">
                   {!! file_get_contents(public_path('images/edit.svg')) !!}Edit</a>
               </li>
@@ -40,7 +40,7 @@
             <img class="rounded-full object-cover w-full h-full" src="{{ asset('storage/profile/' . $post->user->detail->image ) }}" alt="Profile picture" width="30">
           </span>
           @else
-            {!! file_get_contents(public_path('assets/profile/default.svg')) !!}
+            {!! file_get_contents(public_path('Images/default.svg')) !!}
           @endif
           {{ $post->user->username }}
         </a>

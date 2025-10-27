@@ -4,7 +4,7 @@
       <a class="text-xl w-max hover:text-primary hover:transition-all hover:duration-150"
         href="/post/detail/{{ $post->id }}">{{ $post->title }}</a>
     </div>
-    <h5 class="line-clamp-3">{!! nl2br(e($post->post)) !!}</h5>
+    <h5 class="line-clamp-3">{!! nl2br(e($post->content)) !!}</h5>
     <p class="w-full flex justify-end items-center text-sm gap-x-2">
       <a href="{{ route('profile', ['username'=>$post->user->username]) }}"
         class="hover:text-primary hover:transition-all hover:duration-150 flex gap-2 justify-center items-center">
@@ -13,7 +13,7 @@
             <img class="rounded-full object-cover w-full h-full" src="{{ asset('storage/profile/' . $post->user->detail->image ) }}"
               alt="Profile picture" width="30">
           @else
-            {!! file_get_contents(public_path('assets/profile/default.svg')) !!}
+            {!! file_get_contents(public_path('Images/default.svg')) !!}
           @endif
         </span>
         {{ $post->user->username }}

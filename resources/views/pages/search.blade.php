@@ -31,7 +31,7 @@
                     <img src="{{ asset('storage/profile/' . $user->detail->image ) }}" alt="profile picture"
                       class="rounded-full object-cover w-full h-full">
                   @else
-                    {!! file_get_contents(public_path('assets/profile/default.svg')) !!}
+                    {!! file_get_contents(public_path('Images/default.svg')) !!}
                   @endif
                 </span>
                 {{ $user->username }}

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\post;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -43,7 +44,7 @@ class PostController extends Controller
             return redirect()->back()->with('error', $validator->errors()->first());
         }
 
-        post::create([
+        Post::create([
             'id_user'=>$user->id,
             'title'=>$request->title,
             'post'=>$request->post,
@@ -58,7 +59,7 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(post $post)
+    public function show(Post $post)
     {
         //
     }
@@ -66,7 +67,7 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(post $post)
+    public function edit(Post $post)
     {
         //
     }
@@ -74,9 +75,20 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, post $post)
+    public function update(Request $request, Post $post)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $post = Post::findOrFail($request->id);
+            $post->update([
+                'title'=>$request->title,
+                'content'=>$request
+            ]);
+
+        } catch (\Exception $e) {
+
+        }
     }
 
     /**
@@ -84,7 +96,7 @@ class PostController extends Controller
      */
     public function destroy(Request $request)
     {
-        $post = post::find($request->id);
+        $post = Post::find($request->id);
 
         if (auth()->id() != $post->id_user && auth()->user()->role != 'admin') {
             return abort(403);
@@ -101,7 +113,7 @@ class PostController extends Controller
     public function savePost(Request $request) {
         try {
             $user = Auth::user();
-            $post = post::findOrFail($request->id);
+            $post = Post::findOrFail($request->id);
 
             if ($post->isSavedByUser()) {
                 $post->saves()->where('id_user', $user->id)->delete();
@@ -118,7 +130,7 @@ class PostController extends Controller
     public function likePost(Request $request) {
         try {
             $user = Auth::user();
-            $post = post::findOrFail($request->id);
+            $post = Post::findOrFail($request->id);
 
             if ($post->isLikedByUser()) {
                 $post->likes()->where('id_user', $user->id)->delete();

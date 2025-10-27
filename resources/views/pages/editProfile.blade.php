@@ -1,5 +1,8 @@
 @extends('layout.default')
 @section('title', 'Edit Profile')
+@section('script')
+  @vite(['public\assets\js\editProfile.js'])
+@endsection
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)] p-4 gap-4 flex flex-col">
     <h1 class="text-2xl">Edit Your Profile</h1>
@@ -11,12 +14,12 @@
             <div class="w-[100px] h-[100px] overflow-hidden rounded-full">
               @if (isset($user->detail->image))
                 {{-- Tampilkan foto user --}}
-                <img src="/assets/profile/{{ $user->detail->image }}" alt="Profile Picture"
+                <img src="{{ asset('storage/profile/' . $user->detail->image) }}" alt="Profile Picture"
                   class="object-cover w-full h-full rounded-full" id="imagePreview">
               @else
                 {{-- Tampilkan default SVG --}}
                 <div id="defaultSvg">
-                  {!! file_get_contents(public_path('assets/profile/detailDefault.svg')) !!}
+                  {!! file_get_contents(public_path('Images/detailDefault.svg')) !!}
                 </div>
                 {{-- Kita siapkan img kosong untuk preview upload nanti --}}
                 <img id="imagePreview" class="hidden object-cover w-full h-full rounded-full" alt="Preview">
@@ -28,17 +31,18 @@
         </div>
         <div class="flex flex-col w-full">
           <label for="username">Username</label>
-          <input type="text" name="username" id="username" value="{{ $user->username }}" class="input w-full" placeholder="Enter username here">
+          <input type="text" name="username" id="username" value="{{ $user->username }}" class="input w-full"
+            placeholder="Enter username here">
         </div>
       </div>
       <div class="flex flex-col">
         <label for="email">Email</label>
-        <input type="text" name="email" id="email" value="{{ $user->email }}" class="input w-full" placeholder="Enter email here">
+        <input type="text" name="email" id="email" value="{{ $user->email }}" class="input w-full"
+          placeholder="Enter email here">
       </div>
       <div class="flex flex-col">
         <label for="bio">Bio</label>
-        <input type="text" name="bio" id="bio" value="{{ $user->detail->bio }}" class="input w-full"
-          placeholder="Enter bio here">
+        <textarea type="text" name="bio" id="bio" class="textarea w-full" placeholder="Enter bio here">{{ $user->detail->bio }}</textarea>
       </div>
       <div class="flex flex-col">
         <label for="gender">Gender</label>

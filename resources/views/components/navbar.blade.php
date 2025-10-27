@@ -1,4 +1,4 @@
-<nav class="navbar flex px-4 justify-between sticky top-0 bg-base-100 z-10">
+<nav class="navbar flex px-4 justify-between sticky top-0 bg-base-100 z-10 border-b border-gray-500">
   <div class="flex-none">
     <label for="drawer-sidebar" aria-label="open sidebar" class="lg:hidden">
       <svg

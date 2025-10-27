@@ -5,7 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 
-class post extends Model
+class Post extends Model
 {
     protected $fillable = [
         "id_user",
@@ -15,19 +15,19 @@ class post extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(user::class, "id_user");
+        return $this->belongsTo(User::class, "id_user");
     }
 
     public function comments() {
-        return $this->hasMany(comment::class, 'id_post');
+        return $this->hasMany(Comment::class, 'id_post');
     }
 
     public function likes() {
-        return $this->hasMany(like::class, 'id_post');
+        return $this->hasMany(Like::class, 'id_post');
     }
 
     public function saves() {
-        return $this->hasMany(saved::class,'id_post');
+        return $this->hasMany(Saved::class,'id_post');
     }
 
     public function isLikedByUser() {

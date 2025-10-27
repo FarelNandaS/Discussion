@@ -21,7 +21,7 @@ class PostSeeder extends Seeder
                 post::create([
                     'id_user'=>$user->id,
                     'title'=>fake()->realText(100),
-                    'post'=>fake()->realText(500),
+                    'content'=>fake()->realText(500),
                 ]);
             }
         }

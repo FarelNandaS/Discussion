@@ -25,12 +25,16 @@ Route::get('/post/detail/{id}', [IndexController::class, 'DetailPost'])->name('d
 //route profile
 Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
 
+//route settings
+Route::get('/settings', [IndexController::class, 'settings'])->name('settings');
+
 Route::middleware('auth.alert')->group(function () {
     //route saved
     Route::get('/saved', [IndexController::class, 'saved'])->name('saved');
 
     //route post
     Route::get('/post/add', [IndexController::class, 'post'])->name('post-add');
+    Route::get('/post/edit/{id}', [IndexController::class, 'postEdit'])->name('post-edit');
 
     //route profile
     Route::get('/user/edit', [IndexController::class, 'EditProfile'])->name('edit-profile');
@@ -52,10 +56,10 @@ Route::middleware('auth.alert')->group(function () {
     Route::post('/comment/delete', [CommentController::class, 'destroy'])->name('comment-delete');
 });
 
-//route auth google
 Route::middleware('web')->group(function () {
+    //route auth google
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth-google');
-    Route::get('/auth/google/callback', [AuthController::class, 'handlerCallback'])->name('auth-google-callback');
+    Route::get('/auth/google/callback', [AuthController::class, 'handlerGoogleCallback'])->name('auth-google-callback');
 });
 
 //crud login routes
