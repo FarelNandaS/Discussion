@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="en">
+<html data-theme="" class="" lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -9,6 +9,34 @@
   <title>@yield('title', 'My App')</title>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @yield('script')
+
+  <script>
+    function updateDarkClass(theme, html) {
+      if (theme == "dark") html.classList.add("dark");
+      else html.classList.remove("dark");
+    }
+
+    function applyTheme() {
+      const theme = localStorage.getItem("theme") || "system";
+      const html = document.documentElement;
+
+      if (theme == "system") {
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+          .matches ?
+          "dark" :
+          "light";
+        html.setAttribute("data-theme", systemTheme);
+
+        updateDarkClass(systemTheme, html);
+      } else {
+        html.setAttribute("data-theme", theme);
+
+        updateDarkClass(theme, html);
+      }
+    }
+
+    applyTheme();
+  </script>
 </head>
 
 <body class="flex min-h-screen">
@@ -16,6 +44,7 @@
   {{-- Popup & Alert Global --}}
   @include('components.alert')
   @include('components.modal-dialog')
+  @include('components.report-modal')
 
   {{-- Layout Container --}}
   <div class="drawer lg:drawer-open">
@@ -23,22 +52,28 @@
     <input id="drawer-sidebar" type="checkbox" class="drawer-toggle" />
 
     {{-- Konten Utama --}}
-    <div class="drawer-content flex flex-col lg:ml-52 border-l border-gray-500">
+    <div class="drawer-content flex flex-col lg:ml-52 border-x border-gray-500 bg-base-300">
       {{-- Navbar --}}
-      @include('components.navbar')
+      @if (request()->is('admin*'))
+        @include('components.admin.navbar')
+      @else
+        @include('components.navbar')
+      @endif
 
       {{-- Main Content --}}
       <main class="flex-1">
         @yield('main')
       </main>
-
-      @include('components.footer')
     </div>
 
     {{-- Sidebar --}}
     <div class="drawer-side">
       <label for="drawer-sidebar" class="drawer-overlay"></label>
-      @include('components.sidebar')
+      @if (request()->is('admin*'))
+        @include('components.admin.sidebar')
+      @else
+        @include('components.sidebar')
+      @endif
     </div>
   </div>
 
@@ -46,6 +81,7 @@
   <script>
     @if (session('alert'))
       showAlert("{{ session('alert')['type'] }}", "{{ session('alert')['message'] }}")
+      console.error("{{ session('alert')['message'] }}")
     @endif
 
     var btnDropdown = null;

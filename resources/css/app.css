@@ -1,6 +1,80 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "datatables.net-dt/css/dataTables.dataTables.css";
+
+@import "tailwindcss";
+
+@plugin "daisyui" {
+    theme: all;
+}
+
+@plugin "daisyui/theme" {
+    name: "dark";
+    default: false;
+    prefersdark: true;
+    color-scheme: "dark";
+    --color-base-100: oklch(14% 0.004 49.25);
+    --color-base-200: oklch(21% 0.006 56.043);
+    --color-base-300: oklch(26% 0.007 34.298);
+    --color-base-content: oklch(97% 0.001 106.424);
+    --color-primary: oklch(37% 0.146 265.522);
+    --color-primary-content: oklch(97% 0.014 343.198);
+    --color-secondary: oklch(44% 0.017 285.786);
+    --color-secondary-content: oklch(98% 0 0);
+    --color-accent: oklch(0% 0 0);
+    --color-accent-content: oklch(100% 0 0);
+  --color-neutral: oklch(28% 0.091 267.935);
+  --color-neutral-content: oklch(98% 0.001 106.423);
+    --color-info: oklch(58% 0.158 241.966);
+    --color-info-content: oklch(97% 0.013 236.62);
+    --color-success: oklch(59% 0.145 163.225);
+    --color-success-content: oklch(97% 0.021 166.113);
+    --color-warning: oklch(68% 0.162 75.834);
+    --color-warning-content: oklch(98% 0.026 102.212);
+    --color-error: oklch(58% 0.253 17.585);
+    --color-error-content: oklch(96% 0.015 12.422);
+    --radius-selector: 0.5rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+    name: "light";
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(98% 0.002 247.839);
+    --color-base-200: oklch(96% 0.003 264.542);
+    --color-base-300: oklch(92% 0.006 264.531);
+    --color-base-content: oklch(21% 0.034 264.665);
+    --color-primary: oklch(37% 0.146 265.522);
+    --color-primary-content: oklch(97% 0.014 343.198);
+    --color-secondary: oklch(79% 0.209 151.711);
+    --color-secondary-content: oklch(26% 0.065 152.934);
+    --color-accent: oklch(77% 0.152 181.912);
+    --color-accent-content: oklch(27% 0.046 192.524);
+  --color-neutral: oklch(28% 0.091 267.935);
+  --color-neutral-content: oklch(98% 0.001 106.423);
+    --color-info: oklch(70% 0.165 254.624);
+    --color-info-content: oklch(28% 0.091 267.935);
+    --color-success: oklch(79% 0.209 151.711);
+    --color-success-content: oklch(26% 0.065 152.934);
+    --color-warning: oklch(75% 0.183 55.934);
+    --color-warning-content: oklch(26% 0.079 36.259);
+    --color-error: oklch(71% 0.194 13.428);
+    --color-error-content: oklch(27% 0.105 12.094);
+    --radius-selector: 0.5rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
 
 html {
     scrollbar-width: none;
@@ -9,4 +83,42 @@ html {
 
 html::-webkit-scrollbar {
     display: none;
+}
+
+.input:focus,
+input:focus,
+.input :where(input):focus,
+select:focus,
+textarea:focus {
+    border: none;
+    outline-offset: 0;
+}
+/* 
+.dt-length {
+    display: flex;
+    gap: 1rem;
+}
+
+.dt-length-0 {
+    display: flex;
+}
+
+select.dt-input {
+    @apply select
+}
+
+select.dt-input * {
+    @apply bg-base-300
+} */
+
+.dt-column-title {
+    @apply text-center;
+}
+
+.tab-content {
+    @apply rounded-none;
+}
+
+.test-class {
+    @apply bg-red-500;
 }

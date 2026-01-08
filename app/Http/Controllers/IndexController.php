@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\post;
+use App\Models\TrustScoreLog;
 use App\Models\user;
 use Auth;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class IndexController extends Controller
     public function home(Request $request)
     {
         $posts = [];
-        $recommendation = post::inRandomOrder(10)->get();
+        $recommendation = post::inRandomOrder()->take('10')->get();
 
         if (!empty($recommendation)) {
             $posts['recommendation'] = $recommendation;
@@ -38,12 +39,13 @@ class IndexController extends Controller
     public function Profile($username)
     {
         $user = user::where('username', '=', $username)->get()->first();
-        $posts = $user->posts;
-        $likes = $user->likes;
 
         if (empty($user)) {
             return view('pages.not-found');
         }
+        
+        $posts = $user->posts;
+        $likes = $user->likes;
 
         return view('pages.profile', [
             'user' => $user,
@@ -100,7 +102,7 @@ class IndexController extends Controller
             ]);
         }
 
-        $posts = post::where('title', 'like', '%' . $key . '%')->orWhere('post', 'like', '%' . $key . '%')->get();
+        $posts = post::where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%')->get();
         $users = user::where('username', 'like', '%' . $key . '%')->get();
 
         return view('pages.search', [
@@ -134,6 +136,8 @@ class IndexController extends Controller
     }
 
     public function settings() {
-        return view('pages.settings');
+        $logs = TrustScoreLog::where('user_id', auth()->user()->id)->orderByDesc('created_at')->get();
+
+        return view('pages.settings', ['logs'=>$logs]);
     }
 }

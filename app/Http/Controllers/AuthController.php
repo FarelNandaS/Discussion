@@ -37,7 +37,7 @@ class AuthController extends Controller
                 $user->refresh();
             }
 
-            Auth::guard('web')->login($user);
+            Auth::guard('web')->login(user: $user);
 
             return redirect()->intended('/')->with('alert', [
                 'type' => 'success',

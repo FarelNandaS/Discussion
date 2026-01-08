@@ -17,8 +17,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "email"=>"required|email",
-            "password"=>"required|String",
+            "email" => "required|email",
+            "password" => "required|String",
         ]);
 
         if ($validator->fails()) {
@@ -33,12 +33,20 @@ class UserController extends Controller
 
             Auth::login($user, $request->filled('remember'));
 
-            return redirect()->intended('/')->with('alert', [
-                'type'=>'success',
-                'message' => 'you have successfully logged in'
-            ]);
+            if ($user->hasRole('Admin')) {
+                return redirect()->intended('/admin')->with('alert', [
+                    'type' => 'success',
+                    'message' => 'you have successfully logged in'
+                ]);
+            } else {
+                return redirect()->intended('/')->with('alert', [
+                    'type' => 'success',
+                    'message' => 'you have successfully logged in'
+                ]);
+            }
+
         } else {
-            return redirect()->back()->with('error','Email or password invalid');
+            return redirect()->back()->with('error', 'Email or password invalid');
         }
     }
 
@@ -48,15 +56,15 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            "username"=>[
+            "username" => [
                 "required",
                 "string",
                 "max:100",
                 "unique:users",
                 Rule::notIn(['login', 'register', 'post', 'logout']),
             ],
-            "email"=>'required|email|unique:users',
-            "password"=>"required|String|min:8|max:100",
+            "email" => 'required|email|unique:users',
+            "password" => "required|String|min:8|max:100",
         ]);
 
         if ($validator->fails()) {
@@ -64,14 +72,14 @@ class UserController extends Controller
         }
 
         User::create([
-            'username'=>$request->username,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
 
         return redirect('/login')->with('alert', [
-            'type'=> 'success',
-            'message'=>'Your account has been successfully created'
+            'type' => 'success',
+            'message' => 'Your account has been successfully created'
         ]);
     }
 
@@ -80,7 +88,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        
+
     }
 
     /**
@@ -107,30 +115,33 @@ class UserController extends Controller
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            'username'=> 'required|string|max:100|unique:users,username,' . $user->id,
-            'image'=>'nullable|file|mimes:jpg,jpeg,png,svg',
-            'email'=> 'required|string|unique:users,email,' . $user->id,
-            'bio'=>'nullable|string|max:255',
-            'gender'=>'nullable|string|in:Male,Female',
+            'username' => 'required|string|max:100|unique:users,username,' . $user->id,
+            'image' => 'nullable|file|mimes:jpg,jpeg,png,svg',
+            'email' => 'required|string|unique:users,email,' . $user->id,
+            'bio' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|in:Male,Female',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->with('error', $validator->errors());
-        };
+        }
+        ;
 
         if ($request->hasFile('image')) {
             if ($user->detail->image && $user->detail->image !== 'default.svg') {
                 $oldImagePath = public_path('storage/profile/' . $user->detail->image);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
-                }  
+                }
             }
 
             $file = $request->file('image');
-            $fileName = time() . "." . $file->extension();
+            // $fileNameOG = pathinfo()
+            $fileName = $file->getFilename() . time() . "." . $file->extension();
             $file->move(public_path("storage/profile"), $fileName);
             $user->detail->image = $fileName;
-        };
+        }
+        ;
 
         $user->username = $request->username;
         $user->email = $request->email;
@@ -139,9 +150,9 @@ class UserController extends Controller
         $user->detail->save();
         $user->save();
 
-        return redirect()->route('profile', ['username'=>$user->username])->with('alert', [
-            'type'=>'success',
-            'message'=>'your profile has been successfully updated',
+        return redirect()->route('profile', ['username' => $user->username])->with('alert', [
+            'type' => 'success',
+            'message' => 'your profile has been successfully updated',
         ]);
     }
 
@@ -153,37 +164,40 @@ class UserController extends Controller
         //
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/')->with('alert', [
-            'type'=> 'success',
-            'message'=>'You has been logout',
+            'type' => 'success',
+            'message' => 'You has been logout',
         ]);
     }
 
-    public function giveAccess($id) {
+    public function giveAccess($id)
+    {
         $user = User::find($id);
 
         $user->assignRole('Admin');
         $user->save();
 
         return redirect()->back()->with('alert', [
-            'type'=>'success',
-            'message'=>'successfully granted access',
+            'type' => 'success',
+            'message' => 'successfully granted access',
         ]);
     }
 
-    public function deleteAccess($id) {
+    public function deleteAccess($id)
+    {
         $user = User::find($id);
 
         $user->removeRole('Admin');
         $user->save();
 
-                return redirect()->back()->with('alert', [
-            'type'=>'success',
-            'message'=>'successfully removed access',
+        return redirect()->back()->with('alert', [
+            'type' => 'success',
+            'message' => 'successfully removed access',
         ]);
     }
 }

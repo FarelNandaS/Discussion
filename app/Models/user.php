@@ -16,6 +16,7 @@ class User extends Authenticatable
         "password",
         "info",
         "gender",
+        "google_id"
     ];
 
     public function detail() {
@@ -30,19 +31,23 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class,'id_user');
     }
 
-    public function likes() {
-        return $this->belongsToMany(Post::class,'likes', 'id_user', 'id_post');
-    }
-
-    public function hasLiked($postId) {
-        return $this->likes()->where('id_post', $postId)->exists();
-    }
-
     public function saves() {
         return $this->belongsToMany(Post::class,'saveds', 'id_user', 'id_post');
     }
 
     public function hasSaved($postId) {
         return $this->saves()->where('id_post', $postId)->exists();
+    }
+    
+    public function reactions() {
+        return $this->hasMany(Reaction::class, 'user_id', 'id');
+    }
+
+    public function reactPost($postId) {
+        return $this->reactions()->where('reactable_type', Post::class)->where('reactable_id', $postId)->first();
+    }
+
+    public function likes() {
+        return $this->morphedByMany(Post::class, 'reactable', 'reactions')->where('reactions.type', 'up');
     }
 }

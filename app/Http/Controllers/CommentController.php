@@ -43,7 +43,7 @@ class CommentController extends Controller
         Comment::create([
             'id_user'=>auth()->user()->id,
             'id_post'=>$request->id,
-            'comment'=> $request->comment,
+        'content'=> $request->comment,
         ]);
 
         return redirect()->back()->with('alert', [

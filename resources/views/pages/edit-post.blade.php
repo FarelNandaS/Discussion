@@ -2,7 +2,7 @@
 @section('title', 'Edit Post')
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)]  p-4">
-    <form action="{{route('post-save')}}" method="post" id="sendForm" class="w-full h-auto flex flex-col justify-start items-start gap-4 p-4 rounded">
+    <form action="{{route('post-update')}}" method="post" id="sendForm" class="w-full h-auto flex flex-col justify-start items-start gap-4 p-4 rounded">
       @csrf
       <input type="hidden" value="{{ $post->id }}" name="id">
       <h1 class="text-2xl">Edit post</h1>
@@ -12,7 +12,7 @@
       </div>
       <div class="w-full flex flex-col">
         <label for="content">Content</label>
-        <textarea type="text" name="content" id="content"
+        <textarea type="text" name="post" id="content"
           class="textarea w-full resize-none autoWrap" rows="3" placeholder="Enter Content Here">{{ $post->content }}</textarea>
       </div>
       <button type="button" onclick="validate()" class="btn btn-primary">Update Post</button>

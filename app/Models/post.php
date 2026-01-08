@@ -10,8 +10,9 @@ class Post extends Model
     protected $fillable = [
         "id_user",
         "title",
-        "post",
-        "like"
+        "content",
+        "up_vote_count",
+        "down_vote_count",
     ];
 
     public function user() {
@@ -22,21 +23,20 @@ class Post extends Model
         return $this->hasMany(Comment::class, 'id_post');
     }
 
-    public function likes() {
-        return $this->hasMany(Like::class, 'id_post');
+    public function reaction() {
+        return $this->morphMany(Reaction::class, 'reactable');
+    }
+
+    public function upVotes() {
+        return $this->reaction()->where('type', 'up');
+    }
+
+    public function downVotes() {
+        return $this->reaction()->where('type', 'down');
     }
 
     public function saves() {
         return $this->hasMany(Saved::class,'id_post');
-    }
-
-    public function isLikedByUser() {
-        if (Auth::check()) {
-            $user = Auth::user();
-            return $this->likes()->where('id_user', '=', $user->id)->exists();
-        } else {
-            return false;
-        }
     }
 
     public function isSavedByUser() {

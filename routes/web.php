@@ -1,13 +1,17 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// if (!app()->)
 //get routes
 Route::get('/', [IndexController::class, "home"])->name('home');
 
@@ -24,9 +28,6 @@ Route::get('/post/detail/{id}', [IndexController::class, 'DetailPost'])->name('d
 
 //route profile
 Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('profile');
-
-//route settings
-Route::get('/settings', [IndexController::class, 'settings'])->name('settings');
 
 Route::middleware('auth.alert')->group(function () {
     //route saved
@@ -49,11 +50,28 @@ Route::middleware('auth.alert')->group(function () {
 
     //crud post routes
     Route::post("/post/save", [PostController::class, "store"])->name('post-save');
+    Route::post("/post/update", [PostController::class, "update"])->name('post-update');
     Route::post("/post/delete", [PostController::class, "destroy"])->name('post-delete');
 
     //crud comment routes
     Route::post('/comment/save', [CommentController::class, 'store'])->name('comment-save');
     Route::post('/comment/delete', [CommentController::class, 'destroy'])->name('comment-delete');
+
+    //route settings
+    Route::get('/settings', [IndexController::class, 'settings'])->name('settings');
+    Route::post('/settings/changePassword', [SettingController::class, 'changePassword'])->name('settings-change-password');
+});
+
+Route::prefix('admin')->middleware(['auth', 'role:Admin'])->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin-dashboard');
+    Route::get('/report', [AdminController::class, 'reports'])->name('admin-reports');
+    Route::get('/report/{type}/{id}', [AdminController::class, 'reportDetail'])->name('admin-reports-detail');
+
+    Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('admin-profile');
+    Route::get('/user/edit', [IndexController::class, 'EditProfile'])->name('admin-edit-profile');
+
+    Route::post('/report/action/suspend', [ReportController::class, 'actionSuspend'])->name('admin-report-action-suspend');
+    Route::post('/report/action/dismiss', [ReportController::class, 'actionDismiss'])->name('admin-report-action-dismiss');
 });
 
 Route::middleware('web')->group(function () {
@@ -69,6 +87,8 @@ Route::post('/logout', [UserController::class, "logout"])->name('logout-attempt'
 
 //ajax 
 Route::prefix('ajax')->group(function () {
-    Route::post('like-post', [PostController::class, 'likePost'])->name('ajax-like-post');
+    Route::post('send-report', [ReportController::class, 'sendReport'])->name('ajax-send-report');
+    Route::post('check-password', [SettingController::class, 'checkPassword'])->name('ajax-check-password');
     Route::post('save-post', [PostController::class, 'savePost'])->name('ajax-save-post');
+    Route::post('react-post', [ReactionController::class, 'post'])->name('ajax-react-post');
 });

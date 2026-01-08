@@ -1,5 +1,5 @@
 @foreach ($comments as $comment)
-  <div class="flex flex-col border-b border-gray-500 py-4 gap-2">
+  <div class="flex flex-col border border-gray-500 bg-base-100 rounded p-4 gap-2 mb-4">
     <div class="flex justify-between items-center">
       <a href="{{route('profile', ['username'=>$comment->user->username])}}"
         class="flex items-center gap-2 hover:text-primary hover:transition-all hover:duration-150">
@@ -52,7 +52,7 @@
         @endif
       @endif
     </div>
-    <p>{!! nl2br(e($comment->comment)) !!}</p>
+    <p>{!! nl2br(e($comment->content)) !!}</p>
     <div class="flex w-full justify-end">
       <p>{{ $comment->created_at->diffForHumans() }}</p>
     </div>

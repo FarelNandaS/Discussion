@@ -2,89 +2,106 @@
 @section('title', 'Profile - ' . $user->username)
 @section('main')
   <main class=" min-h-[calc(100vh-60px)] min-w-full p-4">
-    <div class="w-full flex justify-between border-b border-gray-600 py-4">
-      <div class="flex flex-col gap-4">
-        <div class="flex flex-col lg:flex-row gap-4">
-          <div class="w-[100px] h-[100px] rounded-full overflow-hidden">
-            @if (isset($user->detail->image))
-              <img src="{{ asset('storage/profile/' . $user->detail->image ) }}" alt="profile image" width="100" height="100"
-                class="rounded-full object-cover w-full h-full">
-            @else
-              {!! file_get_contents(public_path('Images/detailDefault.svg')) !!}
-            @endif
-          </div>
-          <div class="flex flex-col justify-center">
-            <h1 class="text-2xl flex items-center font-bold mb-2">
-              {{ $user->username }}
-              @if ($user->hasRole('Admin'))
-                {!! file_get_contents(public_path('images/adminBig.svg')) !!}
-              @endif
-            </h1>
-            <p class="text-md text-gray-400 mb-2">{{ $user->detail->gender }}</p>
-            <p>{{ $user->detail->bio }}</p>
-          </div>
-        </div>
-      </div>
-
-      @if (auth()->check())
-        <div class="flex items-start justify-center h-9">
-          <div class="h-full w-full flex items-center gap-2">
-            @if (auth()->user()->id != $user->id)
-              <div class="dropdown dropdown-end">
-                <button tabindex="0" role="button"
-                  class="border border-gray-500 rounded-full h-full w-9 flex items-center justify-center hover:bg-primary">
-                  {!! file_get_contents(public_path('images/menu.svg')) !!}
-                </button>
-                <ul class="dropdown-content menu border border-gray-500 w-48 rounded p-0 bg-base-200">
-                  <li><a href="" class="p-2 text-md">{!! file_get_contents(public_path('images/report.svg')) !!} Report Account</a></li>
-                </ul>
+    <div class="card bg-base-100 border border-gray-500">
+      <div class="card-body gap-0">
+        <div class="w-full flex justify-between border-b border-gray-600 py-4">
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-col lg:flex-row gap-4">
+              <div class="w-[100px] h-[100px] rounded-full overflow-hidden">
+                @if (isset($user->detail->image))
+                  <img src="{{ asset('storage/profile/' . $user->detail->image) }}" alt="profile image" width="100"
+                    height="100" class="rounded-full object-cover w-full h-full">
+                @else
+                  {!! file_get_contents(public_path('Images/detailDefault.svg')) !!}
+                @endif
               </div>
+              <div class="flex flex-col justify-center">
+                <h1 class="text-2xl flex items-center font-bold mb-2">
+                  {{ $user->username }}
+                  @if ($user->hasRole('Admin'))
+                    {!! file_get_contents(public_path('images/adminBig.svg')) !!}
+                  @endif
+                </h1>
+                {{-- <p> {{$user->detail->trust_score}}</p> --}}
+                @if ($user->detail->gender)
+                  <p class="text-md text-gray-400 mb-2">{{ $user->detail->gender }}</p>
+                @endif
+                @if ($user->detail->bio)
+                  <p>{{ $user->detail->bio }}</p>
+                @endif
+              </div>
+            </div>
+          </div>
+
+          @if (auth()->check())
+            <div class="flex items-start justify-center h-9">
+              <div class="h-full w-full flex items-center gap-2">
+                @if (auth()->user()->id != $user->id)
+                  {{-- <div class="dropdown dropdown-end">
+                    <button tabindex="0" role="button"
+                      class="border border-gray-500 rounded-full h-full w-9 flex items-center justify-center hover:bg-primary">
+                      {!! file_get_contents(public_path('images/menu.svg')) !!}
+                    </button>
+                    <ul class="dropdown-content menu border border-gray-500 w-48 rounded p-0 bg-base-200">
+                      <li><a href="" class="p-2 text-md">{!! file_get_contents(public_path('images/report.svg')) !!} Report Account</a></li>
+                    </ul>
+                  </div> --}}
+                @else
+                  @if (request()->is('admin*'))
+                    <a href="{{ route('admin-edit-profile') }}"
+                      class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-primary hover:text-white">{!! file_get_contents(public_path('images/edit.svg')) !!}
+                      Edit</a>
+                  @else
+                    <a href="{{ route('edit-profile') }}"
+                      class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-primary hover:text-white">{!! file_get_contents(public_path('images/edit.svg')) !!}
+                      Edit</a>
+                    <form action="{{ route('logout-attempt') }}" method="POST" id="logout-attempt" class="m-0">
+                      @csrf
+                      <button type="button" onclick="confirmLogout()"
+                        class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-error hover:text-white">
+                        {!! file_get_contents(public_path('images/logout.svg')) !!}Logout
+                      </button>
+                    </form>
+                  @endif
+                @endif
+              </div>
+            </div>
+          @endif
+        </div>
+
+        <div class="tabs">
+          <input type="radio" name="tab-profile" class="tab text-lg checked:bg-neutral checked:text-neutral-content"
+            aria-label="Posts" checked>
+          <div class="tab-content border-t-gray-500 py-2">
+            @if ($posts && $posts->count() > 0)
+              @include('components.post', [
+                  'posts' => $posts,
+              ])
             @else
-              <a href="{{ route('edit-profile') }}"
-                class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-primary">{!! file_get_contents(public_path('images/edit.svg')) !!}
-                Edit</a>
-              <form action="{{ route('logout-attempt') }}" method="POST" id="logout-attempt" class="m-0">
-                @csrf
-                <button type="button" onclick="confirmLogout()"
-                  class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-error">
-                  {!! file_get_contents(public_path('images/logout.svg')) !!}Logout
-                </button>
-              </form>
+              <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
+                {!! file_get_contents(public_path('images/not-found.svg')) !!}
+                <h1 class="text-2xl font-bold">
+                  No post yet
+                </h1>
+              </div>
+            @endif
+          </div>
+
+          <input type="radio" name="tab-profile" class="tab text-lg checked:bg-neutral checked:text-neutral-content"
+            aria-label="Likes">
+          <div class="tab-content border-t-gray-500 py-2">
+            @if ($likes && $likes->count() > 0)
+              @include('components.post', ['posts' => $likes])
+            @else
+              <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
+                {!! file_get_contents(public_path('images/not-found.svg')) !!}
+                <h1 class="text-2xl font-bold">
+                  no posts have been liked yet
+                </h1>
+              </div>
             @endif
           </div>
         </div>
-      @endif
-    </div>
-
-    <div class="tabs">
-      <input type="radio" name="tab-profile" class="tab text-lg checked:bg-primary" aria-label="Posts" checked>
-      <div class="tab-content border-t-gray-500 py-2">
-        @if ($posts && $posts->count() > 0)
-          @include('components.post', [
-              'posts' => $posts,
-          ])
-        @else
-          <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
-            {!! file_get_contents(public_path('images/not-found.svg')) !!}
-            <h1 class="text-2xl font-bold">
-              No post yet
-            </h1>
-          </div>
-        @endif
-      </div>
-
-      <input type="radio" name="tab-profile" class="tab text-lg checked:bg-primary" aria-label="Likes">
-      <div class="tab-content border-t-gray-500 py-2">
-        @if ($likes && $likes->count() > 0)
-          @include('components.post', ['posts' => $likes])
-        @else
-          <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
-            {!! file_get_contents(public_path('images/not-found.svg')) !!}
-            <h1 class="text-2xl font-bold">
-              no posts have been liked yet
-            </h1>
-          </div>
-        @endif
       </div>
     </div>
   </main>

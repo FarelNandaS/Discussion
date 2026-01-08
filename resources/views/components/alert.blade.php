@@ -1,5 +1,5 @@
 <div id="alert"
-  class="fixed top-4 left-1/2 z-50 transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-500 ease-out w-[90%] max-w-md">
+  class="fixed top-4 left-1/2 z-[1500] transform -translate-x-1/2 -translate-y-20 opacity-0 transition-all duration-500 ease-out w-[90%] max-w-md">
   <div id="alert-box" class="alert">
     <span id="alert-message"></span>
   </div>

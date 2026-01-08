@@ -2,20 +2,27 @@
 @section('title', 'Add Post')
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)]  p-4">
-    <form action="{{route('post-save')}}" method="post" id="sendForm" class="w-full h-auto flex flex-col justify-start items-start gap-4 p-4 rounded">
-      @csrf
-      <h1 class="text-2xl">Add post</h1>
-      <div class="w-full flex flex-col">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="input w-full" placeholder="Enter Title Here">
+    <div class="flex flex-wrap w-full">
+      <h1 class="text-2xl w-full mb-4">Add post</h1>
+
+      <div class="w-full card bg-base-100 border border-gray-500">
+        <div class="card-body p-2">
+          <form action="{{route('post-save')}}" method="post" id="sendForm" class="flex flex-wrap justify-start items-start gap-4 p-4">
+            @csrf
+            <div class="w-full flex flex-col">
+              <label for="title">Title</label>
+              <input type="text" name="title" id="title" class="input w-full" placeholder="Enter Title Here">
+            </div>
+            <div class="w-full flex flex-col">
+              <label for="content">Content</label>
+              <textarea type="text" name="post" id="content"
+                class="textarea w-full resize-none autoWrap" rows="3" placeholder="Enter Content Here"></textarea>
+            </div>
+            <button type="button" onclick="validate()" class="btn btn-primary">Post</button>
+          </form>
+        </div>
       </div>
-      <div class="w-full flex flex-col">
-        <label for="content">Content</label>
-        <textarea type="text" name="content" id="content"
-          class="textarea w-full resize-none autoWrap" rows="3" placeholder="Enter Content Here"></textarea>
-      </div>
-      <button type="button" onclick="validate()" class="btn btn-primary">Post</button>
-    </form>
+    </div>
   </main>
 
   <script>
@@ -27,7 +34,7 @@
     });
     
     function validate() {
-      let title = $('textarea[name="title"]').val();
+      let title = $('input[name="title"]').val();
       let post = $('textarea[name="post"]').val();
 
       if (title == '') {

@@ -31,29 +31,35 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $user = auth()->user();
-
-        $validator = Validator::make(
-            $request->all(), [
-                "title"=> "required|String",
-                "post"=> "required|String",
-            ]
-        );
-        
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', $validator->errors()->first());
+        try {
+            $user = auth()->user();
+    
+            $validator = Validator::make(
+                $request->all(), [
+                    "title"=> "required|String",
+                    "post"=> "required|String",
+                ]
+            );
+            
+            if ($validator->fails()) {
+                return redirect()->back()->with('alert', ['type'=>'error', 'message'=>$validator->errors()->first()]);
+            }
+    
+            // dd($request);
+    
+            Post::create([
+                'id_user'=>$user->id,
+                'title'=>$request->title,
+                'content'=>$request->post,
+            ]);
+    
+            return redirect('/')->with('alert', [
+                'type'=>'success',
+                'message'=>'successfully created a post'
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('alert', ['type'=>'error', 'message'=>$e->getMessage()]);
         }
-
-        Post::create([
-            'id_user'=>$user->id,
-            'title'=>$request->title,
-            'post'=>$request->post,
-        ]);
-
-        return redirect('/')->with('alert', [
-            'type'=>'success',
-            'message'=>'successfully created a post'
-        ]);
     }
 
     /**
@@ -75,19 +81,18 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request)
     {
         try {
-            DB::beginTransaction();
-
             $post = Post::findOrFail($request->id);
             $post->update([
                 'title'=>$request->title,
-                'content'=>$request
+                'content'=>$request->post,
             ]);
 
+            return redirect()->route('detail-post', ['id'=>$request->id])->with('alert', ['type'=>'success', 'message'=>'successfully update post']);
         } catch (\Exception $e) {
-
+            return redirect()->back()->with('alert', ['type'=>'error', 'message'=>$e->getMessage()]);
         }
     }
 
@@ -122,23 +127,6 @@ class PostController extends Controller
             }
 
             return response()->json(array('status'=>'success', 'message'=>'success to save the post', 'saved'=>$post->isSavedByUser()));
-        } catch (\Exception $e) {
-            return response()->json(array('status'=>'error', 'message'=>$e->getMessage()));
-        }
-    }
-
-    public function likePost(Request $request) {
-        try {
-            $user = Auth::user();
-            $post = Post::findOrFail($request->id);
-
-            if ($post->isLikedByUser()) {
-                $post->likes()->where('id_user', $user->id)->delete();
-            } else {
-                $post->likes()->create(['id_user'=>$user->id]);
-            }
-
-            return response()->json(array('status'=>'success', 'message'=>'success to like the post', 'liked'=>$post->isLikedByUser(), 'count'=>$post->likes->count()));
         } catch (\Exception $e) {
             return response()->json(array('status'=>'error', 'message'=>$e->getMessage()));
         }

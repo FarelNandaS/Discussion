@@ -1,13 +1,13 @@
 <dialog id="confirmDialog" class="modal">
-  <div class="modal-box flex flex-col items-center gap-4">
+  <div class="modal-box flex flex-col items-center gap-4 border border-gray-500">
     {!! file_get_contents(public_path('images/warning.svg')) !!}
     <h1 class="text-4xl font-bold">Are you sure?</h1>
     <p id="confirm-popup" class="text-xl"></p>
 
     <div class="modal-action flex justify-between gap-4">
-      <button id="okBtn" class="btn btn-success text-xl" onclick="confirm()">Yes, Delete it!</button>
+      <button id="okBtn" class="btn btn-success text-lg" onclick="confirm()">Yes, Delete it!</button>
       <form method="dialog">
-        <button class="btn btn-error text-xl">Cancel</button>
+        <button class="btn btn-error text-lg">Cancel</button>
       </form>
     </div>
   </div>

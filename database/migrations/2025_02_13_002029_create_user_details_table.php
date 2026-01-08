@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->string("bio")->nullable();
             $table->string("gender")->nullable();
             $table->string("image")->nullable();
+            $table->integer('trust_score')->default(0);
+            $table->timestamp('suspend_until')->nullable();
             $table->timestamps();
         });
     }
