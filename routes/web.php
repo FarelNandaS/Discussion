@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 // if (!app()->)
 //get routes
 Route::get('/', [IndexController::class, "home"])->name('home');
+Route::get("/test", function () {
+    return 'test';
+});
 
 //route auth
 Route::get('/login', [IndexController::class, 'login'])->name('login');
@@ -64,8 +67,11 @@ Route::middleware('auth.alert')->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'role:Admin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin-dashboard');
+
     Route::get('/report', [AdminController::class, 'reports'])->name('admin-reports');
     Route::get('/report/{type}/{id}', [AdminController::class, 'reportDetail'])->name('admin-reports-detail');
+
+    Route::get('/appeals', [AdminController::class, 'appeals'])->name('admin-appeals');
 
     Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('admin-profile');
     Route::get('/user/edit', [IndexController::class, 'EditProfile'])->name('admin-edit-profile');

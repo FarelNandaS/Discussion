@@ -61,9 +61,9 @@
       @endif
 
       {{-- Main Content --}}
-      <main class="flex-1">
+      <div class="flex-1">
         @yield('main')
-      </main>
+      </div>
     </div>
 
     {{-- Sidebar --}}

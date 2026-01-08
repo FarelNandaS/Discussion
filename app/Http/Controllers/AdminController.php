@@ -49,4 +49,8 @@ class AdminController extends Controller
 
         return view('pages.admin.reportDetail', ['reports'=>$reports, 'content'=>$content, 'type'=>$type]);
     }
+
+    public function appeals() {
+        return view('pages.admin.appeals');
+    }
 }

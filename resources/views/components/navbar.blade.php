@@ -18,6 +18,11 @@
     <div class="flex justify-center items-center gap-4">
       @auth
         {{-- <li class="text-lg"><a href="{{ route('profile', ['username'=>auth()->user()->username]) }}" class="hover:underline">Profile</a></li> --}}
+        <a href="" tabindex="0" class="btn btn-ghost btn-circle">
+          <div class="w-9 rounded-full">
+            <x-phosphor-bell style="width: 100%; height: 100%;"/>
+          </div>
+        </a>
         <a href="{{ route('profile', ['username'=>auth()->user()->username]) }}" tabindex="0" class="btn btn-ghost btn-circle avatar tooltip tooltip-bottom" data-tip="Profile">
           <div class="w-9 rounded-full">
             @if (auth()->user()->detail?->image)
