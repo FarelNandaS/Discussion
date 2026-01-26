@@ -16,37 +16,26 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            "email" => "required|email",
-            "password" => "required|String",
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string'
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', $validator->errors()->first());
-        }
-
         $credential = $request->only('email', 'password');
-        $remember = $request->has('remeber');
+        $remember = $request->has('remember');
 
         if (Auth::attempt($credential, $remember)) {
-            $user = User::where('email', '=', $request->email)->first();
+            $user = Auth::user();
 
-            Auth::login($user, $request->filled('remember'));
+            if ($user->hasVerifiedEmail()) {
+                $redirectTo = $user->hasRole('Admin') ? '/admin' : '/';
 
-            if ($user->hasRole('Admin')) {
-                return redirect()->intended('/admin')->with('alert', [
-                    'type' => 'success',
-                    'message' => 'you have successfully logged in'
-                ]);
+                return redirect()->intended($redirectTo)->with('alert', ['type' => 'success', 'message' => 'you have successfully logged in']);
             } else {
-                return redirect()->intended('/')->with('alert', [
-                    'type' => 'success',
-                    'message' => 'you have successfully logged in'
-                ]);
+                return redirect()->route('verification.notice');
             }
-
         } else {
-            return redirect()->back()->with('error', 'Email or password invalid');
+            return redirect()->back()->withErrors(['email' => 'Email or password invalid'])->withInput($request->only('email'));
         }
     }
 
@@ -71,16 +60,22 @@ class UserController extends Controller
             return redirect()->back()->with('error', $validator->errors());
         }
 
-        User::create([
+        $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/login')->with('alert', [
-            'type' => 'success',
-            'message' => 'Your account has been successfully created'
-        ]);
+        $user->sendEmailVerificationNotification();
+
+        Auth::login($user);
+
+        // return redirect('/login')->with('alert', [
+        //     'type' => 'success',
+        //     'message' => 'Your account has been successfully created'
+        // ]);
+
+        return redirect()->route('verification.notice');
     }
 
     /**
@@ -140,6 +135,15 @@ class UserController extends Controller
             $fileName = $file->getFilename() . time() . "." . $file->extension();
             $file->move(public_path("storage/profile"), $fileName);
             $user->detail->image = $fileName;
+        } else if ($request->remove_image == '1') {
+            if ($user->detail->image && $user->detail->image !== 'default.svg') {
+                $oldImagePath = public_path('storage/profile/' . $user->detail->image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            $user->detail->image = null;
         }
         ;
 

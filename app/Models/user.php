@@ -2,17 +2,22 @@
 
 namespace App\Models;
 
+use App\Notifications\QueuedResetPassword;
+use App\Notifications\QueuedVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasRoles;
+    use HasRoles, Notifiable;
 
     protected $guard_name = 'web';
     protected $fillable = [
         "username",
         "email",
+        "email_verified_at",
         "password",
         "info",
         "gender",
@@ -47,7 +52,15 @@ class User extends Authenticatable
         return $this->reactions()->where('reactable_type', Post::class)->where('reactable_id', $postId)->first();
     }
 
-    public function likes() {
-        return $this->morphedByMany(Post::class, 'reactable', 'reactions')->where('reactions.type', 'up');
+    public function reactedPosts() {
+        return $this->morphedByMany(Post::class, 'reactable', 'reactions');
+    }
+
+    public function sendEmailVerificationNotification() {
+        $this->notify(new QueuedVerifyEmail());
+    }
+
+    public function sendPasswordResetNotification($token) {
+        $this->notify(new QueuedResetPassword($token));
     }
 }

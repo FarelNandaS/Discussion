@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Unique;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("username")->unique();
             $table->string("email")->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string("password");
             $table->string('google_id')->nullable();
             $table->rememberToken();

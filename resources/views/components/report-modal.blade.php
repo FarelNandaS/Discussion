@@ -75,6 +75,7 @@
           showAlert('success', res.message);
         } else {
           showAlert('error', res.message || 'Failed to send report');
+          console.error(res.message);
         }
       }
     })

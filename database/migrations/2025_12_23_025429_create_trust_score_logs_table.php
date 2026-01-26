@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('trust_score_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('user_action_id')->constrained('users');
+            $table->foreignId('user_action_id')->nullable()->constrained('users');
             $table->integer('change');
             $table->text('reason');
             $table->nullableMorphs('reference');

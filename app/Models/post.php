@@ -11,6 +11,7 @@ class Post extends Model
         "id_user",
         "title",
         "content",
+        "image",
         "up_vote_count",
         "down_vote_count",
     ];
@@ -46,5 +47,17 @@ class Post extends Model
         } else {
             return false;
         }
+    }
+
+    public function reports() {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function appeals() {
+        return $this->morphMany(Appeals::class, 'content');
+    }
+
+    public function tags() {
+        return $this->belongsToMany(Tag::class, 'post_tags');
     }
 }

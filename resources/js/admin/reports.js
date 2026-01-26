@@ -11,6 +11,7 @@ var instanceDtTable = dt_table_basic.DataTable({
         },
         { data: 'reported name'},
         { data: 'reported content'},
+        { data: 'content type'},
         { data: 'total weight'},
         { data: 'total reports'},
         { data: 'action'},

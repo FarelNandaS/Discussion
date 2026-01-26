@@ -132,7 +132,7 @@
     function validate() {
       let date = $('input[name="suspend_until"]').val();
       let change = $('input[name="change"]').val();
-      let reason = $('input[name="reason"]').val();
+      let reason = $('textarea[name="reason"]').val();
 
       if (date == '') {
         showAlert('warning', 'suspend date is required');

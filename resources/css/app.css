@@ -1,4 +1,5 @@
 @import "datatables.net-dt/css/dataTables.dataTables.css";
+@import "@yaireo/tagify/dist/tagify.css";
 
 @import "tailwindcss";
 
@@ -21,8 +22,8 @@
     --color-secondary-content: oklch(98% 0 0);
     --color-accent: oklch(0% 0 0);
     --color-accent-content: oklch(100% 0 0);
-  --color-neutral: oklch(28% 0.091 267.935);
-  --color-neutral-content: oklch(98% 0.001 106.423);
+    --color-neutral: oklch(28% 0.091 267.935);
+    --color-neutral-content: oklch(98% 0.001 106.423);
     --color-info: oklch(58% 0.158 241.966);
     --color-info-content: oklch(97% 0.013 236.62);
     --color-success: oklch(59% 0.145 163.225);
@@ -56,8 +57,8 @@
     --color-secondary-content: oklch(26% 0.065 152.934);
     --color-accent: oklch(77% 0.152 181.912);
     --color-accent-content: oklch(27% 0.046 192.524);
-  --color-neutral: oklch(28% 0.091 267.935);
-  --color-neutral-content: oklch(98% 0.001 106.423);
+    --color-neutral: oklch(28% 0.091 267.935);
+    --color-neutral-content: oklch(98% 0.001 106.423);
     --color-info: oklch(70% 0.165 254.624);
     --color-info-content: oklch(28% 0.091 267.935);
     --color-success: oklch(79% 0.209 151.711);
@@ -75,6 +76,11 @@
     --depth: 1;
     --noise: 0;
 }
+
+.tagify {
+    @apply rounded w-full;
+}
+
 
 html {
     scrollbar-width: none;

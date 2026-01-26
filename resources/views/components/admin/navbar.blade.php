@@ -16,11 +16,11 @@
             @if (auth()->user()->detail?->image)
               <img src="{{ asset('storage/profile/' . auth()->user()->detail->image) }}" alt="avatar" />
             @else
-              <x-tabler-user-circle style="width: 100%; height: 100%; padding: 0;"/>
+              <x-phosphor-user-circle style="width: 100%; height: 100%; padding: 0;"/>
             @endif
           </div>
         </label>
-        <ul tabindex="0" class="menu dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+        <ul tabindex="0" class="menu dropdown-content mt-3 z-[1] p-2 shadow-xl bg-base-100 rounded-box w-52 border border-gray-500">
           <li>
             <a href="{{ route('admin-profile', ['username' => auth()->user()->username]) }}">
               <x-tabler-user-circle style="width: 40px;"/>
@@ -28,7 +28,7 @@
             </a>
           </li>
           <li>
-            <form method="POST" action="{{ route('logout-attempt') }}">
+            <form method="POST" action="{{ route('logout-attempt') }}" class="flex">
               @csrf
               <button type="submit" class="w-full text-left flex gap-2">
                 <x-tabler-logout style="width: 40px;"/>

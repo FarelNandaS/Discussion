@@ -27,12 +27,13 @@ class AuthController extends Controller
                 $user = user::create([
                     'username' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
+                    'email_verified_at' => now(),
                     'google_id' => $googleUser->getId(),
                     'password' => bcrypt(Str::random(16)),
                 ]);
 
                 userDetail::create([
-                    'user_id'=>$user->id
+                    'user_id' => $user->id
                 ]);
                 $user->refresh();
             }

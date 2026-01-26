@@ -16,8 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger("id_user");
             $table->string("title");
             $table->longText("content");
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('up_vote_count')->default(0);
             $table->unsignedBigInteger('down_vote_count')->default(0);
+            $table->boolean('isDelete')->default(false);
             $table->timestamps();
 
             $table->foreign("id_user")->references("id")->on("users")->onDelete("cascade")->onUpdate("cascade");

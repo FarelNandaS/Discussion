@@ -30,6 +30,7 @@ class RolesAndUsersSeeder extends Seeder
                 'username' => $role,
                 'email' => $role . '@example.test',
                 'password' => Hash::make('password'),
+                'email_verified_at'=>now()
             ]);
 
             UserDetail::create([
@@ -51,6 +52,7 @@ class RolesAndUsersSeeder extends Seeder
                 'username'=>$name,
                 'email'=>$name . '@example.test',
                 'password'=>Hash::make('password'),
+                'email_verified_at'=>now()
             ]);
 
             UserDetail::create([

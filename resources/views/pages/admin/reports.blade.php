@@ -18,6 +18,7 @@
                   <th class="text-center">No</th>
                   <th class="text-center">Reported Username</th>
                   <th class="text-center">Reported Content</th>
+                  <th class="text-center">Content Type</th>
                   <th class="text-center">Total Weight</th>
                   <th class="text-center">Total Reports</th>
                   <th class="text-center">Action</th>
@@ -36,6 +37,7 @@
                     <td class="text-center"></td>
                     <td class="text-center">{{ $content->user->username }}</td>
                     <td class="text-center">{{ Str::limit($content->content, 50) }}</td>
+                    <td class="text-center">{{ $content->getMorphClass() == \App\Models\Post::class ? 'Post' : 'Comment' }}</td>
                     <td class="text-end">{{ $report->weight_count }}</td>
                     <td class="text-end">{{ $report->report_count }}</td>
                     <td class="text-center">

@@ -24,6 +24,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@yaireo/tagify": "^4.36.0",
+        "apexcharts": "^5.3.6",
         "datatables.net-dt": "^2.3.5",
         "jquery": "^3.7.1"
     }

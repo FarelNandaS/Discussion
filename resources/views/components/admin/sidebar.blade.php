@@ -18,13 +18,13 @@ $currentRoute = Route::currentRouteName();
     <li>
       <a href="{{ route('admin-reports') }}"
         class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg is-drawer-close:tooltip is-drawer-close:tooltip-right {{ str_contains($currentRoute, 'admin-reports') ? 'menu-active' : '' }}">
-        <x-tabler-flag  style="widows: 25px; height: 25px;"/> <span>Reports</span>
+        <x-tabler-report-analytics  style="width: 25px; height: 25px;"/> <span>Reports</span>
       </a>
     </li>
     <li>
       <a href="{{ route('admin-appeals') }}"
         class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg is-drawer-close:tooltip is-drawer-close:tooltip-right {{ str_contains($currentRoute, 'admin-appeals') ? 'menu-active' : '' }}">
-        <x-phosphor-warning-circle style="width: 25px; height: 25px;"/> <span>Appeals</span>
+        <x-tabler-gavel style="width: 25px; height: 25px;"/> <span>Appeals</span>
       </a>
     </li>
   </ul>

@@ -6,9 +6,14 @@
       <h1 class="text-2xl border-b border-gray-500 py-4">saved</h1>
       @include('components.post')
     @else
-      <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
-        {!! file_get_contents(public_path('Images/not-found.svg')) !!}
-        <h1 class="text-2xl font-bold">No posts saved yet</h1>
+      <div class="flex justify-center items-center flex-col gap-4 py-20 w-full">
+        <div class="opacity-40">
+          {!! file_get_contents(public_path('images/not-found.svg')) !!}
+        </div>
+        <div class="text-center">
+          <h1 class="text-2xl font-bold opacity-80">There are no saved posts yet.</h1>
+          <p class="text-gray-500">Find something interesting and save it to read later!</p>
+        </div>
       </div>
     @endif
   </main>

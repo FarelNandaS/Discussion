@@ -106,6 +106,13 @@
         dropdownMenu = null;
       }
     })
+
+    function confirmPost(id) {
+      event.preventDefault();
+      return showConfirm(function() {
+        $('#delete-post-form-' + id).submit();
+      }, "You won't be able to revert this!", "yes, Delete it!")
+    }
   </script>
 </body>
 

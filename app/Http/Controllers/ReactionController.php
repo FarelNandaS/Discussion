@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Reaction;
 use App\Models\TrustScoreLog;
+use App\Notifications\ReactionNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -43,6 +44,12 @@ class ReactionController extends Controller
                         $count = $post->down_vote_count;
                     }
 
+                    $post->user->notifications()->where([
+                        'data->type'=>'reaction',
+                        'data->content_type'=>Post::class,
+                        'data->content_id'=>$post->id,
+                    ])->delete();
+
                     DB::commit();
 
                     return response()->json([
@@ -79,6 +86,17 @@ class ReactionController extends Controller
                     $log->change = $change;
                     $log->reason = $reason;
                     $log->save();
+
+                    $voteText = ($request->type == 'up') ? 'upvote' : 'downvote';
+
+                    $post->user->notifications()->where([
+                        'data->type'=>'reaction',
+                        'data->content_type'=>Post::class,
+                        'data->content_id'=>$post->id,
+                    ])->update([
+                        'data->reaction_type'=>$request->type,
+                        'data->title'=>'Your content with title "' . $post->title . '" get '. $voteText .' by ' . auth()->user()->username . '.',
+                    ]);
 
                     DB::commit();
 
@@ -121,6 +139,8 @@ class ReactionController extends Controller
                     'reference_type' => $post->getMorphClass(),
                     'reference_id' => $post->id,
                 ]);
+
+                $post->user->notify(new ReactionNotification($post, auth()->user(), $request->type));
 
                 DB::commit();
 

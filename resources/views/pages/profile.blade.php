@@ -1,10 +1,13 @@
 @extends('layout.default')
 @section('title', 'Profile - ' . $user->username)
+@section('script')
+  @vite(['resources/js/profile.js'])
+@endsection
 @section('main')
   <main class=" min-h-[calc(100vh-60px)] min-w-full p-4">
     <div class="card bg-base-100 border border-gray-500">
       <div class="card-body gap-0">
-        <div class="w-full flex justify-between border-b border-gray-600 py-4">
+        <div class="w-full flex justify-between py-4">
           <div class="flex flex-col gap-4">
             <div class="flex flex-col lg:flex-row gap-4">
               <div class="w-[100px] h-[100px] rounded-full overflow-hidden">
@@ -19,7 +22,7 @@
                 <h1 class="text-2xl flex items-center font-bold mb-2">
                   {{ $user->username }}
                   @if ($user->hasRole('Admin'))
-                    {!! file_get_contents(public_path('images/adminBig.svg')) !!}
+                    <x-eos-admin style="width: 30px; height: 30px;" />
                   @endif
                 </h1>
                 {{-- <p> {{$user->detail->trust_score}}</p> --}}
@@ -55,13 +58,6 @@
                     <a href="{{ route('edit-profile') }}"
                       class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-primary hover:text-white">{!! file_get_contents(public_path('images/edit.svg')) !!}
                       Edit</a>
-                    <form action="{{ route('logout-attempt') }}" method="POST" id="logout-attempt" class="m-0">
-                      @csrf
-                      <button type="button" onclick="confirmLogout()"
-                        class="btn btn-ghost px-2 rounded border border-gray-500 hover:bg-error hover:text-white">
-                        {!! file_get_contents(public_path('images/logout.svg')) !!}Logout
-                      </button>
-                    </form>
                   @endif
                 @endif
               </div>
@@ -69,39 +65,55 @@
           @endif
         </div>
 
-        <div class="tabs">
-          <input type="radio" name="tab-profile" class="tab text-lg checked:bg-neutral checked:text-neutral-content"
-            aria-label="Posts" checked>
-          <div class="tab-content border-t-gray-500 py-2">
-            @if ($posts && $posts->count() > 0)
-              @include('components.post', [
-                  'posts' => $posts,
-              ])
-            @else
-              <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
+        {{-- <div class="w-full py-2">
+          <h1 class="text-2xl font-bold">User posts:</h1>
+          @if ($posts && $posts->count() > 0)
+            @include('components.post', [
+                'posts' => $posts,
+            ])
+          @else
+            <div class="flex justify-center items-center flex-col gap-4 py-20 w-full">
+              <div class="opacity-40">
                 {!! file_get_contents(public_path('images/not-found.svg')) !!}
-                <h1 class="text-2xl font-bold">
-                  No post yet
-                </h1>
               </div>
-            @endif
+              <div class="text-center">
+                <h1 class="text-2xl font-bold opacity-80">There are no posts yet.</h1>
+                <p class="text-gray-500">User has not created a post yet</p>
+              </div>
+            </div>
+          @endif
+        </div> --}}
+
+        <div class="w-full mt-10">
+          {{-- Judul dengan garis dekoratif --}}
+          <div class="flex items-center gap-4 mb-2">
+            <h2 class="text-2xl font-black tracking-tight whitespace-nowrap">User Posts</h2>
+            <div class="h-[2px] w-full bg-base-200"></div>
           </div>
 
-          <input type="radio" name="tab-profile" class="tab text-lg checked:bg-neutral checked:text-neutral-content"
-            aria-label="Likes">
-          <div class="tab-content border-t-gray-500 py-2">
-            @if ($likes && $likes->count() > 0)
-              @include('components.post', ['posts' => $likes])
-            @else
-              <div class="flex justify-center items-center flex-col gap-2 p-4 w-full min-h-[calc(100vh-60px)]">
-                {!! file_get_contents(public_path('images/not-found.svg')) !!}
-                <h1 class="text-2xl font-bold">
-                  no posts have been liked yet
-                </h1>
+          @if ($posts && $posts->count() > 0)
+            <div id="post_container">
+              @include('components.post', ['posts' => $posts])
+            </div>
+
+            <div id="load_more_status" class="flex justify-center py-4">
+              <div id="loading_spinner" class="loading loading-dots loading-md hidden"></div>
+            </div>
+          @else
+            {{-- Empty State yang lebih menarik --}}
+            <div
+              class="flex justify-center items-center flex-col gap-4 py-16 w-full bg-base-200/20 rounded-3xl border-2 border-dashed border-base-300">
+              <div class="bg-base-100 p-6 rounded-full shadow-inner">
+                <x-tabler-article-off class="w-12 h-12 opacity-20" />
               </div>
-            @endif
-          </div>
+              <div class="text-center">
+                <h3 class="text-lg font-bold opacity-80">No stories yet</h3>
+                <p class="text-sm text-base-content/50">This user hasn't published any posts.</p>
+              </div>
+            </div>
+          @endif
         </div>
+
       </div>
     </div>
   </main>
