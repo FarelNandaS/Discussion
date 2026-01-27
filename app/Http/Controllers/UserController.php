@@ -28,7 +28,7 @@ class UserController extends Controller
             $user = Auth::user();
 
             if ($user->hasVerifiedEmail()) {
-                $redirectTo = $user->hasRole('Admin') ? '/admin' : '/';
+                $redirectTo = $user->hasRole('Admin') || $user->hasRole('Super Admin') ? '/admin' : '/';
 
                 return redirect()->intended($redirectTo)->with('alert', ['type' => 'success', 'message' => 'you have successfully logged in']);
             } else {
@@ -203,5 +203,36 @@ class UserController extends Controller
             'type' => 'success',
             'message' => 'successfully removed access',
         ]);
+    }
+
+    public function manageUserRole(Request $request) {
+        if (!auth()->user()->hasRole('Super Admin')) {
+            return response()->json([
+                'status'=>'forbidden',
+                'code'=>403,
+            ]);
+        }
+
+        try {
+            $user = User::find($request->id);
+
+            if ($request->type == 'add') {
+                $user->assignRole('Admin');
+            } else {
+                $user->removeRole('Admin');
+            }
+
+            return response()->json([
+                'status'=>'success',
+                'code'=>200,
+                'data'=>$user->roles()->pluck('name')->implode(', '),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'=>'error',
+                'code'=>500,
+                'data'=>$e
+            ]);
+        }
     }
 }

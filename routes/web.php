@@ -104,7 +104,7 @@ Route::middleware(['auth.alert'])->group(function () {
     Route::post('/appeal/submit', [AppealController::class, 'submit'])->name('appeal-submit');
 });
 
-Route::prefix('admin')->middleware(['auth', 'role:Admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:Admin|Super Admin',])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin-dashboard');
 
     Route::get('/report', [AdminController::class, 'reports'])->name('admin-reports');
@@ -112,6 +112,8 @@ Route::prefix('admin')->middleware(['auth', 'role:Admin'])->group(function () {
 
     Route::get('/appeals', [AdminController::class, 'appeals'])->name('admin-appeals');
     Route::get('/appeals/{id}', [AdminController::class, 'appealDetail'])->name('admin-appeals-detail');
+
+    Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin-user-management')->middleware('role:Super Admin');
 
     Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('admin-profile');
     Route::get('/user/edit', [IndexController::class, 'EditProfile'])->name('admin-edit-profile');
@@ -124,6 +126,7 @@ Route::prefix('admin')->middleware(['auth', 'role:Admin'])->group(function () {
 
 //ajax 
 Route::prefix('ajax')->group(function () {
+    Route::post('manage-user-role', [UserController::class, 'manageUserRole'])->name('ajax-manage-user-role');
     Route::post('send-report', [ReportController::class, 'sendReport'])->name('ajax-send-report');
     Route::post('check-password', [SettingController::class, 'checkPassword'])->name('ajax-check-password');
     Route::post('save-post', [PostController::class, 'savePost'])->name('ajax-save-post');

@@ -106,4 +106,10 @@ class AdminController extends Controller
 
         return view('pages.admin.appealDetail', ['appeal'=>$appeal, 'reports'=>$reports]);
     }
+
+    public function userManagement() {
+        $users = User::whereNot('id', auth()->id())->get();
+
+        return view('pages.admin.userManagement', compact('users'));
+    }
 }

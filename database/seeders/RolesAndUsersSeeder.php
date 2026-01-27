@@ -20,7 +20,7 @@ class RolesAndUsersSeeder extends Seeder
         $roles = [
             'User',
             'Admin',
-            // 'Moderator',
+            'Super Admin',
         ];
 
         foreach ($roles as $role) {
@@ -28,7 +28,7 @@ class RolesAndUsersSeeder extends Seeder
 
             $user = User::create([
                 'username' => $role,
-                'email' => $role . '@example.test',
+                'email' => str_replace(' ', '_', $role). '@example.test',
                 'password' => Hash::make('password'),
                 'email_verified_at'=>now()
             ]);

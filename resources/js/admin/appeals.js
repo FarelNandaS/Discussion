@@ -17,8 +17,13 @@ var instanceDtTable = dt_table_basic.DataTable({
     ],
     columnDefs: [
         {
+            targets: 0, 
+            searchable: false, 
+            className: 'dt-center'
+        },
+        {
             target: '_all',
-            type: 'string',
+            // type: 'string',
             // className: 'dt-body-center'
         }
     ],
