@@ -20,7 +20,7 @@
                 <x-eos-admin class="w-4 h-4" title="Admin" />
               @endif
             </a>
-            <span class="text-xs text-base-content/60">{{ $post->created_at->diffForHumans() }}</span>
+            <span class="text-xs text-base-content/60">{{ $post->created_at->format('d M Y') }}</span>
           </div>
         </div>
       </div>

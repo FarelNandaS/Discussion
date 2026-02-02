@@ -6,7 +6,7 @@ Aplikasi platform diskusi berbasis web yang dibangun dengan Laravel 11 dan Livew
 
 - [Fitur Utama](#fitur-utama)
 - [Stack Teknologi](#stack-teknologi)
-- [Instalasi](#instalasi)
+- [Instalasi](#instalasi)p3
 - [Struktur Direktori](#struktur-direktori)
 - [Dokumentasi Module](#dokumentasi-module)
 - [API Routes](#api-routes)
@@ -26,7 +26,7 @@ Aplikasi platform diskusi berbasis web yang dibangun dengan Laravel 11 dan Livew
 - ✅ Appeal/banding untuk konten yang dilaporkan
 - ✅ Dashboard admin untuk pengelolaan
 - ✅ Sistem trust score untuk pengguna
-- ✅ Notifikasi real-time
+- ✅ Notifikasi
 - ✅ Pengaturan profil dan keamanan
 
 ## 🛠 Stack Teknologi

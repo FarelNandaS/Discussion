@@ -68,16 +68,16 @@
 
             <div class="mt-3 grid grid-cols-2 gap-2 text-xs" id="password-requirements">
               <div id="req-length" class="flex items-center gap-2 text-base-content/50 transition-colors">
-                <span class="dot w-2 h-2 rounded-full bg-current"></span> Minimal 8 Karakter
+                <span class="dot w-2 h-2 rounded-full bg-current"></span> Minimum 8 Characters
               </div>
               <div id="req-upper" class="flex items-center gap-2 text-base-content/50 transition-colors">
-                <span class="dot w-2 h-2 rounded-full bg-current"></span> Huruf Besar
+                <span class="dot w-2 h-2 rounded-full bg-current"></span> Have Uppercase
               </div>
               <div id="req-number" class="flex items-center gap-2 text-base-content/50 transition-colors">
-                <span class="dot w-2 h-2 rounded-full bg-current"></span> Angka
+                <span class="dot w-2 h-2 rounded-full bg-current"></span> Have Number
               </div>
               <div id="req-special" class="flex items-center gap-2 text-base-content/50 transition-colors">
-                <span class="dot w-2 h-2 rounded-full bg-current"></span> Karakter Simbol
+                <span class="dot w-2 h-2 rounded-full bg-current"></span> Have Symbol Characters
               </div>
             </div>
 
