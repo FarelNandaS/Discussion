@@ -13,7 +13,7 @@
               <x-tabler-hash class="w-10 h-10" />
             </div>
             <div>
-              <h1 class="text-3xl font-black italic tracking-tight">{{ $tag->name }}</h1>
+              <h1 class="text-3xl font-black italic tracking-tight mb-2">{{ $tag->name }}</h1>
               <p class="text-sm text-base-content/60">
                 Showing <span class="font-bold text-base-content">{{ $posts->count() }}</span> posts categorized in this
                 topic
@@ -21,9 +21,10 @@
             </div>
           </div>
 
-          <a href="{{ route('tags') }}" class="btn btn-ghost btn-sm gap-2">
+          <input type="date" name="sortDate" id="sortDate" class="input">
+          {{-- <a href="{{ route('tags') }}" class="btn btn-ghost btn-sm gap-2">
             <x-tabler-arrow-left class="w-4 h-4" /> Back to tags
-          </a>
+          </a> --}}
         </div>
 
         {{-- Post Container --}}

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -57,7 +58,8 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->with('error', $validator->errors());
+            // return redirect()->back()->with('error', $validator->errors());
+            return redirect()->back()->with('alert', ['type' => 'error', 'message' => $validator->errors()->first()])->withInput();
         }
 
         $user = User::create([
@@ -67,6 +69,11 @@ class UserController extends Controller
         ]);
 
         $user->sendEmailVerificationNotification();
+
+        UserDetail::create([
+            'user_id' => $user->id,
+            'trust_score'=>70,
+        ]);
 
         Auth::login($user);
 
@@ -205,11 +212,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function manageUserRole(Request $request) {
+    public function manageUserRole(Request $request)
+    {
         if (!auth()->user()->hasRole('Super Admin')) {
             return response()->json([
-                'status'=>'forbidden',
-                'code'=>403,
+                'status' => 'forbidden',
+                'code' => 403,
             ]);
         }
 
@@ -223,15 +231,15 @@ class UserController extends Controller
             }
 
             return response()->json([
-                'status'=>'success',
-                'code'=>200,
-                'data'=>$user->roles()->pluck('name')->implode(', '),
+                'status' => 'success',
+                'code' => 200,
+                'data' => $user->roles()->count() > 0 ? $user->roles()->pluck('name')->implode(', ') : '-',
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status'=>'error',
-                'code'=>500,
-                'data'=>$e
+                'status' => 'error',
+                'code' => 500,
+                'data' => $e
             ]);
         }
     }

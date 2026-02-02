@@ -23,6 +23,9 @@
           <a href="{{ route('profile', ['username' => $comment->user->username]) }}"
             class="font-bold text-sm hover:underline">
             {{ $comment->user->username }}
+            @if ($comment->user->hasRole('Admin') || $comment->user->hasRole('Super Admin'))
+              <x-eos-admin style="width: 20px; height: 20px;" class="tooltip" data-tip="Admin" />
+            @endif
           </a>
           <span class="text-[10px] opacity-40">•</span>
           <span class="text-xs opacity-50">{{ $comment->created_at->diffForHumans() }}</span>
@@ -36,7 +39,7 @@
             </button>
             <ul tabindex="0"
               class="dropdown-content menu p-1 shadow-xl bg-base-200 rounded-box w-32 border border-gray-500 z-[10]">
-              @if (auth()->id() == $comment->id_user || auth()->user()?->hasRole('Admin'))
+              @if (auth()->id() == $comment->id_user || auth()->user()->hasRole('Super Admin'))
                 <li>
                   <form id="delete-comment-form-{{ $comment->id }}" action="{{ route('comment-delete') }}"
                     method="POST" onsubmit="return confirmComment({{ $comment->id }})">
@@ -66,4 +69,3 @@
     </div>
   </div>
 @endforeach
-

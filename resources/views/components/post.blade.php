@@ -1,5 +1,5 @@
 @foreach ($posts as $post)
-  <div class="card bg-base-100 border border-gray-500 shadow-lg my-6">
+  <div class="card bg-base-100 border border-gray-500 shadow-lg my-6 postCard" data-date="{{ $post->created_at->format('Y-m-d') }}">
     <div class="card-body p-5">
       
       <div class="flex justify-between items-start mb-4">
@@ -16,8 +16,8 @@
           <div class="flex flex-col">
             <a href="{{ route('profile', ['username' => $post->user->username]) }}" class="font-bold hover:text-primary flex items-center gap-1">
               {{ $post->user->username }}
-              @if ($post->user->hasRole('Admin'))
-                <x-eos-admin class="w-4 h-4 text-blue-500" title="Admin" />
+              @if ($post->user->hasRole('Admin') || $post->user->hasRole('Super Admin'))
+                <x-eos-admin class="w-4 h-4" title="Admin" />
               @endif
             </a>
             <span class="text-xs text-base-content/60">{{ $post->created_at->diffForHumans() }}</span>

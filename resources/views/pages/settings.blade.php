@@ -126,7 +126,7 @@
 
               <div class="lg:col-span-5 flex flex-col gap-6"> 
                 <div class="bg-base-200/50 rounded-xl p-4 border border-gray-500 shadow-lg">
-                  <div id="trust_score_chart" data-score="{{ auth()->user()->detail->trust_score }}"
+                  <div id="trust_score_chart" data-score="{{ auth()->user()->detail->trust_score ?? 0 }}"
                     class="w-full min-h-[250px]">
                   </div>
                 </div>

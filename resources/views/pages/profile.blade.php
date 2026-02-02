@@ -21,15 +21,18 @@
               <div class="flex flex-col justify-center">
                 <h1 class="text-2xl flex items-center font-bold mb-2">
                   {{ $user->username }}
-                  @if ($user->hasRole('Admin'))
-                    <x-eos-admin style="width: 30px; height: 30px;" />
+                  @if ($user->hasRole('Admin') || $user->hasRole('Super Admin'))
+                    <x-eos-admin style="width: 30px; height: 30px;" class="tooltip" data-tip="Admin"/>
                   @endif
                 </h1>
-                {{-- <p> {{$user->detail->trust_score}}</p> --}}
-                @if ($user->detail->gender)
-                  <p class="text-md text-gray-400 mb-2">{{ $user->detail->gender }}</p>
+                <div class="">
+                  <span class="text-sm text-gray-500 me-4">{{$user->detail->trust_score ?? 0}} Trust Score</span>
+                  <span class="text-sm text-gray-500">{{$user->posts->count()}} {{ Str::plural('Post', $user->posts->count()) }}</span>
+                </div>
+                @if (isset($user->detail->gender))
+                  <p class="text-md text-gray-500">{{ $user->detail->gender ?? '' }}</p>
                 @endif
-                @if ($user->detail->bio)
+                @if (isset($user->detail->bio))
                   <p>{{ $user->detail->bio }}</p>
                 @endif
               </div>
@@ -89,6 +92,7 @@
           <div class="flex items-center gap-4 mb-2">
             <h2 class="text-2xl font-black tracking-tight whitespace-nowrap">User Posts</h2>
             <div class="h-[2px] w-full bg-base-200"></div>
+            <input type="date" name="sortDate" id="sortDate" class="input">
           </div>
 
           @if ($posts && $posts->count() > 0)

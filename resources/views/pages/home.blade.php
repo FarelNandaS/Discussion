@@ -1,10 +1,13 @@
 @extends('layout.default')
-@section('title', "Let's Disscus")
+@section('title', "Let's Discuss")
 
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)] p-4">
     @if ($posts['recommendation'] && $posts['recommendation']->count())
-      <h1 class="text-2xl mb-4 border-b border-gray-500 pb-4 font-bold">Recommendation Posts</h1>
+      <div class="flex justify-between items-center border-b border-gray-500 mb-4 pb-4">
+        <h1 class="text-2xl font-bold">Recommendation Posts</h1>
+        <input type="date" name="sortDate" id="sortDate" class="input">
+      </div>
       @include('components.post', ['posts' => $posts['recommendation']])
     @else
       <div class="flex justify-center items-center flex-col gap-4 py-20 w-full">
@@ -18,4 +21,23 @@
       </div>
     @endif
   </main>
+
+  <script>
+    // document.getElementById('sortDate').addEventListener('change', function () {
+    //   const val = this.value;
+    //   const posts = document.querySelectorAll('.postCard');
+
+    //   posts.forEach(post => {
+    //     const postDate = post.getAttribute('data-date');
+    //     console.log(postDate);
+    //     console.log(val);
+
+    //     if (val == '' || postDate == val) {
+    //       post.style.display = 'block'
+    //     } else {
+    //       post.style.display = 'none'
+    //     }
+    //   })
+    // })
+  </script>
 @endsection

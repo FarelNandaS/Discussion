@@ -13,8 +13,10 @@ use Illuminate\Support\Facades\Validator;
 
 class IndexController extends Controller
 {
+    //fungsi yang di panggil di halaman page
     public function home(Request $request)
     {
+        //mengambil secara acak postingan
         $posts = [];
         $recommendation = post::where('isDelete', false)->inRandomOrder()->take('10')->get();
 
@@ -27,26 +29,31 @@ class IndexController extends Controller
         ]);
     }
 
+    //fungsi controller di halaman login
     public function login()
     {
         return view('pages.auth.login');
     }
 
+    //fungsi controller di halamn register
     public function register()
     {
         return view('pages.auth.register');
     }
 
+    //fungsi controller di profile $username harus jadi parameter url setelah /profile/(username)
     public function Profile(Request $request, $username)
     {
         $user = user::where('username', '=', $username)->get()->first();
 
+        //mengembalikan not found jika tidak di temukan
         if (empty($user)) {
             return view('pages.not-found');
         }
 
         $posts = $user->posts()->where('isDelete', false)->simplePaginate(10);
 
+        //mengambil ajax dari infinity scroll di page ini membutuhkan param ?page=
         if ($request->ajax()) {
             return view('components.post', compact('posts'))->render();
         }
@@ -57,6 +64,7 @@ class IndexController extends Controller
         ]);
     }
 
+    //fungsi controller di page edit profile
     public function EditProfile()
     {
         $user = auth()->user();
@@ -65,15 +73,19 @@ class IndexController extends Controller
         ]);
     }
 
+    //fungsi controller di page add post
     public function post()
     {
-        $isSuspend = auth()->user()->detail->suspend_until > now();
+        //mengambil apakah user tersuspend atau trust_score di bawah 70
+        $isSuspend = (auth()->user()->detail->suspend_until > now() || auth()->user()->detail->trust_score < 70) ;
+        // $isSuspend = false;
 
         return view('pages.post', [
             'isSuspend' => $isSuspend
         ]);
     }
 
+    //fungsi controller di page edit post param $id di gunakan di url setelah /post/edit/(id disini)
     public function postEdit($id)
     {
         $post = post::find($id);
@@ -81,18 +93,24 @@ class IndexController extends Controller
         return view('pages.edit-post', ['post' => $post]);
     }
 
+    //fungsi controller di page edit post param $id di gunakan di url setelah /post/(id disini)
     public function DetailPost(Request $request, $id)
     {
+        //mengambil post 
         $post = Post::find($id);
+
+        //mengambil commentar yang tidak di hide/di hapus oleh sistem 
         $comments = Comment::where([
             'id_post' => $post->id,
             'isDelete' => false
         ])->latest()->simplePaginate(10);
 
+        //mengembalikan code 404 jika terdelete
         if ($post->isDelete) {
             abort(404);
         }
 
+        //mengambil ajax untuk infinity scroll di page ini
         if ($request->ajax()) {
             return view('components.comment', compact('comments'))->render();
         }
@@ -107,6 +125,7 @@ class IndexController extends Controller
     {
         $key = $request->key;
 
+        //memvalidasi 
         $validator = Validator::make([
             'key' => $key,
         ], [
@@ -120,7 +139,11 @@ class IndexController extends Controller
             ]);
         }
 
-        $posts = post::where('isDelete', false)->where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%')->latest()->simplePaginate(10);
+        $posts = post::where('isDelete', false)->where('title', 'like', '%' . $key . '%')->orWhere('content', 'like', '%' . $key . '%')->orWhereHas('tags', function ($query) use ($key) {
+            $query->where('name', 'like', '%' . $key . '%');
+        })->orWhereHas('user', function ($query) use ($key) {
+            $query->where('username', 'like', '%' . $key . '%');
+        })->latest()->simplePaginate(10);
         $users = user::where('username', 'like', '%' . $key . '%')->take(10)->get();
 
         if ($request->ajax()) {
@@ -170,8 +193,9 @@ class IndexController extends Controller
 
             $isReaction = isset($item->data['type']) && $item->data['type'] == 'reaction';
             $contentId = $item->data['content_id'] ?? null;
+            $contnetType = $item->data['content_type'] ?? null;
 
-            if ($lastGroup && $lastGroup['type'] == 'reaction' && $isReaction && $lastGroup['content_id'] == $contentId) {
+            if ($lastGroup && $lastGroup['type'] == 'reaction' && $isReaction && $lastGroup['content_id'] == $contentId && $lastGroup['content_type'] == $contnetType) {
                 $lastGroup['items'][] = $item;
 
                 $lastGroup['items_count']++;
@@ -189,6 +213,7 @@ class IndexController extends Controller
                         'type' => 'reaction',
                         'content_id' => $contentId,
                         'content_type' => $item->data['content_type'],
+                        'content_type_human'=>str_contains($item->data['content_type'], 'Post') ? 'post' : (str_contains($item->data['content_type'], 'Comment') ? 'comment' : 'null'),
                         'title' => $item->data['content_title'] ?? 'Untitled',
                         'upvotes' => $item->data['reaction_type'] == 'up' ? 1 : 0,
                         'downvotes' => $item->data['reaction_type'] == 'down' ? 1 : 0,
@@ -214,11 +239,41 @@ class IndexController extends Controller
 
         $notif->markAsRead();
 
+        if ($notif->data['type'] == 'reaction') {
+            return redirect()->route('detail-post', ['id'=>$notif->data['content_id']]);
+        }
+
         return view('pages.detail-inbox', ['notification' => $notif]);
     }
 
-    public function tags() {
-        $tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->simplePaginate(40);
+    public function inboxDetailReaction($type, $id) {
+        $morphClass = $type == 'post' ? Post::class : Comment::class;
+
+        auth()->user()->notifications()->where([
+            'data->type'=>'reaction',
+            'data->content_type'=>$morphClass,
+            'data->content_id'=>$id,
+        ])->update([
+            'read_at'=>now()
+        ]);
+        // dd($type);
+        if ($type == 'post') {
+            return redirect()->route('detail-post', ['id'=>$id]);
+        } else if ($type == 'comment') {
+            $comment = Comment::find($id);
+
+            return redirect()->route('detail-post', ['id'=>$comment->post->id]);
+        } else {
+            return abort(404);
+        };
+    }
+
+    public function tags(Request $request) {
+        $tags = Tag::withCount('posts')->orderBy('posts_count', 'desc')->simplePaginate(20);
+
+        if ($request->ajax()) {
+            return view('components.tag', compact('tags'))->render();
+        }
 
         return view('pages.tags', compact('tags'));
     }

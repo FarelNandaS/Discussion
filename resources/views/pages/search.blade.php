@@ -11,9 +11,13 @@
           aria-label="Posts" checked>
         <div class="tab-content border-t-gray-500 p-4">
           @if ($posts && $posts->count())
-            <h1 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6">
-              Post Search Results: <span class="text-primary">"{{ $key }}"</span>
-            </h1>
+            <div class="flex justify-between items-center">
+              <h1 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6">
+                Post Search Results: <span class="text-primary">"{{ $key }}"</span>
+              </h1>
+
+              <input type="date" name="sortDate" id="sortDate" class="input">
+            </div>
 
             <div class="" id="post_container" data-key="{{ $key }}">
               @include('components.post', ['posts' => $posts])
@@ -67,10 +71,18 @@
                     <div class="flex flex-col">
                       <span class="font-bold text-lg group-hover:text-primary transition-colors">
                         {{ $user->username }}
+                        @if ($user->hasRole('Admin') || $user->hasRole('Super Admin'))
+                          <x-eos-admin style="width: 25px; height: 25px;" class="tooltip" data-tip="Admin" />
+                        @endif
                       </span>
-                      <span class="text-sm text-gray-500">
-                        {{ $user->posts->count() }} {{ Str::plural('Post', $user->posts->count()) }}
-                      </span>
+                      <div>
+                        <span class="text-sm text-gray-500 me-4">
+                          {{ $user->detail->trust_score }} Trust Score
+                        </span>
+                        <span class="text-sm text-gray-500">
+                          {{ $user->posts->count() }} {{ Str::plural('Post', $user->posts->count()) }}
+                        </span>
+                      </div>
                     </div>
                   </a>
                 </div>

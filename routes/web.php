@@ -14,7 +14,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Support\Facades\Route;
 
-// if (!app()->)
 //get routes
 Route::get('/', [IndexController::class, "home"])->name('home');
 Route::get("/test", function () {
@@ -99,32 +98,43 @@ Route::middleware(['auth.alert'])->group(function () {
     //route notification
     Route::get('/inbox', [IndexController::class, 'inbox'])->name('inbox');
     Route::get('/inbox/{id}', [IndexController::class, 'inboxDetail'])->name('inbox-detail');
+    Route::get('/inbox/{type}/{id}', [IndexController::class, 'inboxDetailReaction'])->name('inbox-detail-reaction');
 
     //route appeal
     Route::post('/appeal/submit', [AppealController::class, 'submit'])->name('appeal-submit');
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:Admin|Super Admin',])->group(function () {
+    //route dashboard
     Route::get('/', [AdminController::class, 'index'])->name('admin-dashboard');
 
+    //route report
     Route::get('/report', [AdminController::class, 'reports'])->name('admin-reports');
     Route::get('/report/{type}/{id}', [AdminController::class, 'reportDetail'])->name('admin-reports-detail');
 
+    //route appeal
     Route::get('/appeals', [AdminController::class, 'appeals'])->name('admin-appeals');
     Route::get('/appeals/{id}', [AdminController::class, 'appealDetail'])->name('admin-appeals-detail');
 
+    //route user management
     Route::get('/user-management', [AdminController::class, 'userManagement'])->name('admin-user-management')->middleware('role:Super Admin');
 
+    //route profile dan edit profile admin
     Route::get('/user/profile/{username}', [IndexController::class, 'Profile'])->name('admin-profile');
     Route::get('/user/edit', [IndexController::class, 'EditProfile'])->name('admin-edit-profile');
 
+    //route setting admin
+    Route::get('/settings', [IndexController::class, 'settings'])->name('admin-settings');
+
+    //route action report
     Route::post('/report/action/suspend', [ReportController::class, 'actionSuspend'])->name('admin-report-action-suspend');
     Route::post('/report/action/dismiss', [ReportController::class, 'actionDismiss'])->name('admin-report-action-dismiss');
 
+    //route action appeal
     Route::post('/appeal/action', [AppealController::class, 'actiond'])->name('admin-appeal-actiond');
 });
 
-//ajax 
+//route ajax 
 Route::prefix('ajax')->group(function () {
     Route::post('manage-user-role', [UserController::class, 'manageUserRole'])->name('ajax-manage-user-role');
     Route::post('send-report', [ReportController::class, 'sendReport'])->name('ajax-send-report');

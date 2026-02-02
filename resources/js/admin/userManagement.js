@@ -12,7 +12,7 @@ var instanceDtTable = dt_table_basic.DataTable({
         },
         { data: "username" },
         { data: "email" },
-        { data: "gender" },
+        { data: "trust score" },
         { data: "role" },
         { data: "action" },
     ],
@@ -20,6 +20,10 @@ var instanceDtTable = dt_table_basic.DataTable({
         {
             targets: 0, 
             searchable: false, 
+            className: 'dt-center'
+        },
+        {
+            target: 3,
             className: 'dt-center'
         },
         {

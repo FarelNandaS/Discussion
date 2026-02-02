@@ -61,6 +61,11 @@ class ProcessReportReward implements ShouldQueue
 
             UserDetail::whereIn('user_id', $reporterIds)->update([
                 'trust_score' => DB::raw("LEAST(100, GREATEST(0, trust_score + ($change)))"),
+                'suspend_until' => DB::raw("
+                    CASE WHEN (trust_score + ($change)) < 70 THEN '" . now()->addDays(7)->toDateTimeString() . "'
+                    ELSE NULL
+                    END
+                "),
                 'updated_at' => now()
             ]);
 

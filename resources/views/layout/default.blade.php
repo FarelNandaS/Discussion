@@ -113,6 +113,23 @@
         $('#delete-post-form-' + id).submit();
       }, "You won't be able to revert this!", "yes, Delete it!")
     }
+
+    document.getElementById('sortDate')?.addEventListener('change', function() {
+      const val = this.value;
+      const posts = document.querySelectorAll('.postCard');
+
+      posts.forEach(post => {
+        const postDate = post.getAttribute('data-date');
+
+        if (val == '' || postDate == val) {
+          post.style.display = 'block'
+        } else {
+          post.style.display = 'none'
+        }
+      })
+    })
+    // if (document.getElementById('sortDate').length > 0) {
+    // }
   </script>
 </body>
 

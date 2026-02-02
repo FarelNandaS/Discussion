@@ -11,15 +11,6 @@
         <div class="flex justify-between items-start gap-4 mb-6">
           <div class="">
             <h1 class="text-3xl font-black tracking-tight leading-tight">{{ $post->title }}</h1>
-
-            <div class="flex flex-wrap gap-2 my-3">
-            @foreach ($post->tags as $tag)
-              <a href="/tags/{{ $tag->slug }}"
-                class="badge badge-primary badge-md py-3 px-4 hover:scale-105 transition-all">
-                {{ $tag->name }}
-              </a>
-            @endforeach
-          </div>
           </div>
 
           <div class="flex items-center gap-2">
@@ -35,12 +26,14 @@
                 </button>
                 <ul tabindex="0"
                   class="dropdown-content menu p-2 shadow-xl bg-base-200 rounded-box w-52 border border-gray-500 z-[1]">
-                  @if (auth()->id() == $post->id_user || auth()->user()->hasRole('Admin'))
-                    <li>
-                      <a href="{{ route('post-edit', ['id' => $post->id]) }}" class="">
-                        <x-tabler-edit class="w-5 h-5" /> Edit Post
-                      </a>
-                    </li>
+                  @if (auth()->id() == $post->id_user || auth()->user()->hasRole('Super Admin'))
+                    @if (auth()->id() == $post->id_user)
+                      <li>
+                        <a href="{{ route('post-edit', ['id' => $post->id]) }}" class="">
+                          <x-tabler-edit class="w-5 h-5" /> Edit Post
+                        </a>
+                      </li>
+                    @endif
                     <li>
                       <form id="delete-post-form-{{ $post->id }}" action="{{ route('post-delete') }}" method="POST"
                         onsubmit="return confirmPost({{ $post->id }})" class="flex">
@@ -65,27 +58,49 @@
         </div>
 
         @if ($post->image)
-          {{-- Asumsi ada kolom image di tabel post --}}
-          <div
-            class="mb-8 group md:max-w-[50%] relative overflow-hidden rounded-2xl border border-gray-500/30 bg-base-200">
-            {{-- Gambar dengan efek hover zoom --}}
-            <img src="{{ asset('storage/posts/' . $post->image) }}" alt="{{ $post->title }}"
-              class="w-full object-contain transition-transform duration-500 cursor-zoom-in"
-              onclick="image_modal.showModal()" />
+          <div class="mb-10 group relative mr-auto w-fit max-w-full">
+            {{-- Container Gambar dengan Efek Glassmorphism --}}
+            <div class="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl bg-base-300">
 
-            {{-- Overlay gradasi tipis agar terlihat premium --}}
-            <div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.1)]"></div>
+              {{-- Overlay saat Hover --}}
+              <div onclick="image_modal.showModal()"
+                class="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/20 transition-all duration-300 cursor-zoom-in flex items-center justify-center">
+                <x-tabler-zoom-in
+                  class="text-white opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all duration-300 w-12 h-12" />
+              </div>
+
+              {{-- Gambar Utama --}}
+              <div class="flex justify-center bg-base-200 rounded-2xl overflow-hidden border border-gray-500/20">
+                <img src="{{ asset('storage/posts/' . $post->image) }}" class="max-h-[300px] w-auto object-contain"
+                  alt="Post image">
+              </div>
+
+              {{-- Badge Metadata Gambar (Opsional) --}}
+              <div class="absolute bottom-4 left-4 z-20">
+                <span
+                  class="badge badge-ghost bg-black/40 backdrop-blur-md text-white border-none gap-2 px-4 py-3 text-xs">
+                  <x-tabler-photo class="w-4 h-4" /> Full View
+                </span>
+              </div>
+            </div>
+
+            {{-- Efek Bayangan Lembut di Belakang (Glow) --}}
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 -z-10">
+            </div>
           </div>
 
-          {{-- Modal Pop-up untuk Full Image (DaisyUI Modal) --}}
-          <dialog id="image_modal" class="modal modal-middle bg-black/80 backdrop-blur-sm">
-            <div class="modal-box p-0 bg-transparent shadow-none max-w-5xl">
+          {{-- Modal Pop-up - Dibuat Lebih Bersih --}}
+          <dialog id="image_modal" class="modal modal-middle backdrop-blur-md">
+            <div
+              class="modal-box p-0 bg-transparent shadow-none max-w-[95vw] max-h-[95vh] flex items-center justify-center">
               <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-white bg-black/20">✕</button>
+                <button class="btn btn-sm btn-circle btn-primary absolute right-4 top-4 z-50 shadow-lg">✕</button>
               </form>
-              <img src="{{ asset('storage/posts/' . $post->image) }}" class="w-full h-auto" />
+              <img src="{{ asset('storage/posts/' . $post->image) }}"
+                class="rounded-lg max-h-[90vh] w-auto object-contain shadow-2xl border border-white/10" />
             </div>
-            <form method="dialog" class="modal-backdrop">
+            <form method="dialog" class="modal-backdrop bg-black/90">
               <button>close</button>
             </form>
           </dialog>
@@ -94,6 +109,15 @@
         <article class="prose prose-md max-w-none text-base-content/90 leading-relaxed mb-8">
           {!! nl2br(e($post->content)) !!}
         </article>
+
+        <div class="flex flex-wrap gap-2 my-3">
+          @foreach ($post->tags as $tag)
+            <a href="/tags/{{ $tag->slug }}"
+              class="badge badge-primary badge-md py-3 px-4 hover:scale-105 transition-all">
+              {{ $tag->name }}
+            </a>
+          @endforeach
+        </div>
 
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-6 border-t border-base-200">
 
@@ -111,6 +135,9 @@
             <div>
               <a href="{{ route('profile', ['username' => $post->user->username]) }}" class="font-bold hover:link">
                 {{ $post->user->username }}
+                @if ($post->user->hasRole('Admin') || $post->user->hasRole('Super Admin'))
+                  <x-eos-admin style="width: 20px; height: 20px;" class="tooltip" data-tip="Admin" />
+                @endif
               </a>
               <p class="text-[10px] uppercase tracking-widest opacity-50">{{ $post->created_at->format('d M Y') }} •
                 {{ $post->created_at->diffForHumans() }}</p>
@@ -133,8 +160,8 @@
             {{-- Vote Section --}}
             @php $react = auth()->user()?->reactPost($post->id); @endphp
             <div class="flex items-center gap-1">
-              <button id="btnUpVote" onclick="reaction({{ $post->id }}, 'up')"
-                class="btn btn-ghost btn-sm gap-2 {{ $react && $react->type == 'up' ? 'text-primary bg-primary/10' : '' }}"
+              <button id="btnUpVote" onclick="reaction({{ $post->id }}, 'up')" data-tip="Upvote"
+                class="btn btn-ghost btn-sm tooltip gap-2"
                 data-status="{{ $react && $react->type == 'up' ? 'active' : 'idle' }}">
                 <span class="svg">
                   @if ($react && $react->type == 'up')
@@ -146,8 +173,8 @@
                 <span class="count font-bold">{{ $post->upVotes->count() }}</span>
               </button>
 
-              <button id="btnDownVote" onclick="reaction({{ $post->id }}, 'down')"
-                class="btn btn-ghost btn-sm gap-2 {{ $react && $react->type == 'down' ? 'text-error bg-error/10' : '' }}"
+              <button id="btnDownVote" onclick="reaction({{ $post->id }}, 'down')" data-tip="Downvote"
+                class="btn btn-ghost btn-sm tooltip gap-2"
                 data-status="{{ $react && $react->type == 'down' ? 'active' : 'idle' }}">
                 <span class="svg">
                   @if ($react && $react->type == 'down')
@@ -172,18 +199,24 @@
 
     <div class="card bg-base-100 border border-gray-500 shadow-lg mb-8">
       <div class="card-body p-4">
-        @if (auth()->check() && auth()->user()->detail->suspend_until > now())
+        @if (auth()->check() && (auth()->user()->detail->suspend_until > now() || auth()->user()->detail->trust_score < 70))
           <div class="bg-error/10 p-6 flex flex-col items-center text-center gap-3">
             <div class="bg-error text-white p-3 rounded-full">
               <x-phosphor-chat-centered-dots-bold class="w-8 h-8" />
             </div>
             <div>
               <h4 class="font-bold text-lg text-error">Commenting Ability Disabled</h4>
-              <p class="text-sm opacity-80 max-w-md mx-auto">
-                Your account is currently suspended until
-                <strong>{{ auth()->user()->detail->suspend_until->format('d M Y') }}</strong>.
-                You can still read discussions, but you won't be able to post new comments.
-              </p>
+              @if (isset(auth()->user()->detail->suspend_until))
+                <p class="text-sm opacity-80 max-w-md mx-auto">
+                  Your account is currently suspended until
+                  <strong>{{ auth()->user()->detail->suspend_until->format('d M Y') }}</strong>.
+                  You can still read discussions, but you won't be able to post new comments.
+                </p>
+              @else
+                <p class="text-sm opacity-80 max-w-md mx-auto">
+                  You cannot comment because your trust score is below 70.
+                </p>
+              @endif
             </div>
           </div>
         @else
@@ -261,9 +294,9 @@
         success: function(response) {
           if (response.status == 'success') {
             if (response.saved) {
-              $('#btnSave').empty().append(`{!! file_get_contents(public_path('images/saved.svg')) !!}`)
+              $('#btnSave').empty().append(`<x-tabler-bookmark-filled class="w-6 h-6 text-primary" />`)
             } else {
-              $('#btnSave').empty().append(`{!! file_get_contents(public_path('images/save.svg')) !!}`)
+              $('#btnSave').empty().append(`<x-tabler-bookmark-filled class="w-6 h-6" />`)
             }
 
             loadingSave = false;
@@ -285,15 +318,15 @@
 
       if (newStatus == 'active') {
         if (type == 'up') {
-          svgEl.html(`<x-phosphor-arrow-fat-up-fill style="width: 30px; height: 30px;" />`)
+          svgEl.html(`<x-phosphor-arrow-fat-up-fill class="w-6 h-6" />`)
         } else if (type == 'down') {
-          svgEl.html(`<x-phosphor-arrow-fat-down-fill style="width: 30px; height: 30px;" />`)
+          svgEl.html(`<x-phosphor-arrow-fat-down-fill class="w-6 h-6" />`)
         }
       } else if (newStatus == 'idle') {
         if (type == 'up') {
-          svgEl.html(`<x-phosphor-arrow-fat-up style="width: 30px; height: 30px;" />`)
+          svgEl.html(`<x-phosphor-arrow-fat-up class="w-6 h-6" />`)
         } else if (type == 'down') {
-          svgEl.html(`<x-phosphor-arrow-fat-down style="width: 30px; height: 30px;" />`)
+          svgEl.html(`<x-phosphor-arrow-fat-down class="w-6 h-6" />`)
         }
       }
     }

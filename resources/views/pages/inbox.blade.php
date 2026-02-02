@@ -18,7 +18,7 @@
           <div class="divide-y divide-base-300"> {{-- Garis pemisah antar notifikasi --}}
             @if ($notifications && $notifications->count())
               @foreach ($notifications as $notification)
-                <a href="{{ $notification['type'] == 'reaction' ? route('detail-post', ['id'=>$notification['content_id']]) : route('inbox-detail', ['id' => $notification->id]) }}"
+                <a href="{{ $notification['type'] == 'reaction' ? route('inbox-detail-reaction', ['type'=>$notification['content_type_human'], 'id'=>$notification['content_id']]) : route('inbox-detail', ['id' => $notification->id]) }}"
                   class="p-4 hover:bg-base-200/50 transition-colors flex gap-4 {{ ($notification->read_at ?? $notification['read_at']) ? 'opacity-70' : 'border-l-4 border-primary bg-primary/5' }}">
 
                   {{-- Icon Berdasarkan Type --}}

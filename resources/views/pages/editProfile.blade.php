@@ -52,14 +52,14 @@
       </div>
       <div class="flex flex-col">
         <label for="bio">Bio</label>
-        <textarea type="text" name="bio" id="bio" class="textarea w-full" placeholder="Enter bio here">{{ $user->detail->bio }}</textarea>
+        <textarea type="text" name="bio" id="bio" class="textarea w-full" placeholder="Enter bio here">{{ $user->detail->bio ?? '' }}</textarea>
       </div>
       <div class="flex flex-col">
         <label for="gender">Gender</label>
         <select name="gender" id="gender" class="select w-full" aria-placeholder="Select gender here">
           <option value="">Not Set</option>
-          <option value="Male" {{ $user->detail->gender == 'Male' ? 'selected' : '' }}>Male</option>
-          <option value="Female" {{ $user->detail->gender == 'Female' ? 'selected' : '' }}>Female</option>
+          <option value="Male" {{ (isset($user->detail->gender) ? $user->detail->gender == 'Male' : false) ? 'selected' : '' }}>Male</option>
+          <option value="Female" {{ (isset($user->detail->gender) ? $user->detail->gender == 'Female' : false) ? 'selected' : '' }}>Female</option>
         </select>
       </div>
       <button type="submit"

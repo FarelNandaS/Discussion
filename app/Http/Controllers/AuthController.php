@@ -33,7 +33,8 @@ class AuthController extends Controller
                 ]);
 
                 userDetail::create([
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'trust_score'=>70,
                 ]);
                 $user->refresh();
             }

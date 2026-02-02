@@ -18,7 +18,7 @@
                   <th class="text-center">No</th>
                   <th class="text-center">Username</th>
                   <th class="text-center">Email</th>
-                  <th class="text-center">Gender</th>
+                  <th class="text-center">Trust Score</th>
                   <th class="text-center">Role</th>
                   <th class="text-center">Action</th>
                 </tr>
@@ -29,14 +29,18 @@
                     <td class="text-center"></td>
                     <td class="text-center">{{ $user->username }}</td>
                     <td class="text-center">{{ $user->email }}</td>
-                    <td class="text-center">{{ $user->detail->gender ?? '-' }}</td>
-                    <td class="text-center col-role">{{ $user->roles->pluck('name')->implode(', ') }}</td>
+                    <td class="text-center">{{ $user->detail->trust_score ?? 0 }}</td>
+                    <td class="text-center col-role">{{ $user->roles->count() > 0 ? $user->roles->pluck('name')->implode(', ') : '-' }}</td>
                     <td class="text-center flex col-action">
+                      <a href="{{ route('admin-profile', ['username'=>$user->username]) }}" class="btn btn-primary btn-sm m-2">
+                        {{-- <x-tabler-eye class="w-4 h-4"/> --}}
+                        detail
+                      </a>
                       @if ($user->hasRole('Admin'))
-                        <button class="btn btn-primary btn-sm m-2"
+                        <button class="btn btn-primary btn-sm m-2" id="btnGiveRole"
                           onclick="ActionRole(this, {{ $user->id }}, 'remove')">Remove Admin</button>
                       @else
-                        <button class="btn btn-primary btn-sm m-2"
+                        <button class="btn btn-primary btn-sm m-2" id="btnGiveRole"
                           onclick="ActionRole(this, {{ $user->id }}, 'add')">Give Admin</button>
                       @endif
                     </td>
@@ -72,16 +76,13 @@
 
             row.find('.col-role').text(res.data);
 
-            let newButton = '';
             if (type === 'add') {
-              newButton =
-                `<button class="btn btn-primary btn-sm m-2" onclick="ActionRole(this, ${id}, 'remove')">Remove Admin</button>`;
+              row.find('#btnGiveRole').text('Remove Admin');
+              row.find('#btnGiveRole').attr('onclick', `ActionRole(this, ${id}, 'remove')`);
             } else {
-              newButton =
-                `<button class="btn btn-primary btn-sm m-2" onclick="ActionRole(this, ${id}, 'add')">Give Admin</button>`;
+              row.find('#btnGiveRole').text('Give Admin');
+              row.find('#btnGiveRole').attr('onclick', `ActionRole(this, ${id}, 'add')`);
             }
-
-            row.find('.col-action').html(newButton);
           } else {
             showAlert('error', res.data);
             console.error(res.data);

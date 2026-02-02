@@ -8,7 +8,7 @@
 
     {{-- Search --}}
     <form class="flex items-center m-0 w-1/2 max-w-lg join" action="/search">
-      <input type="text" name="key" placeholder="Search..." value="{{ $key ?? '' }}" class="input join-item">
+      <input type="text" name="key" placeholder="Search by title, username, content, or tag..." value="{{ $key ?? '' }}" class="input join-item">
       <button
         class="flex items-center join-item rounded justify-center p-2 bg-primary text-white tooltip tooltip-bottom"
         data-tip="Search">
@@ -17,7 +17,7 @@
     </form>
 
     {{-- Profile/Login --}}
-    <div class="flex justify-center items-center gap-2">
+    <div class="flex justify-center items-center px-4 gap-2">
       @auth
         <?php
         $haveNew = auth()->user()->unreadNotifications;
@@ -86,7 +86,7 @@
                 My Profile
               </a>
             </li>
-            @if (auth()->user()->hasRole('Admin'))
+            @if (auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Super Admin'))
               <li>
                 <a href="{{ route('admin-dashboard') }}">
                   <x-tabler-layout-dashboard style="width: 25px; height: 25px;" />
@@ -116,7 +116,7 @@
           </div>
         </a> --}}
       @else
-        <div class="text-lg"><a href="/login" class="hover:underline">Login</a></div>
+        <div class="text-lg"><a href="/login" class="hover:underline font-semibold">Login</a></div>
       @endauth
     </div>
   </div>

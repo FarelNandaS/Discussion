@@ -1,5 +1,8 @@
 @extends('layout.default')
 @section('title', 'Tags')
+@section('script')
+  @vite(['resources/js/tags.js'])
+@endsection
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)] min-w-full p-4">
     <div class="max-w-6xl mx-auto">
@@ -21,33 +24,21 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="tagContainer">
-        @forelse($tags as $tag)
-          <a href="{{ route('tag-post', ['slug'=>$tag->slug]) }}"
-            class="group card bg-base-100 border border-gray-500 hover:border-primary/50 hover:shadow-xl transition-all duration-300 overflow-hidden">
-            <div class="card-body p-5">
-              <div class="flex justify-between items-start">
-                <div class="flex flex-col">
-                  <h2 class="text-xl font-bold group-hover:text-primary transition-colors">
-                    {{ $tag->name }}
-                  </h2>
-                  <span class="text-sm opacity-50 mt-1">
-                    {{ $tag->posts_count ?? 0 }} {{ Str::plural('post', $tag->posts_count) }}
-                  </span>
-                </div>
-                <div
-                  class="bg-primary/10 text-primary p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
-                  <x-tabler-arrow-up-right class="w-5 h-5" />
-                </div>
-              </div>
-            </div>
-          </a>
-        @empty
+      <div class="gap-4">
+        @if (!empty($tags))
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="tagContainer">
+            @include('components.tag', $tags)
+          </div>
+
+          <div id="load_more_status" class="flex justify-center py-4">
+            <div id="loading_spinner" class="loading loading-dots loading-md hidden"></div>
+          </div>
+        @else
           <div class="col-span-full flex flex-col items-center justify-center py-20 opacity-40">
             <x-tabler-tag-off class="w-20 h-20 mb-4" />
             <p class="text-xl font-bold">No tags found yet.</p>
           </div>
-        @endforelse
+        @endif
       </div>
     </div>
   </main>

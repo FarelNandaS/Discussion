@@ -36,4 +36,13 @@ $currentRoute = Route::currentRouteName();
       </li>
     @endif
   </ul>
+
+  <ul class="flex flex-col mt-10">
+    <li>
+      <a href="{{ route('admin-settings') }}"
+        class="flex items-center gap-2 p-2 pl-4 rounded-none lg:text-lg {{ str_contains($currentRoute, 'settings') ? 'menu-active' : '' }}">
+        <x-tabler-settings style="width: 25px;" /> Settings
+      </a>
+    </li>
+  </ul>
 </div>

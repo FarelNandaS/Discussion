@@ -32,6 +32,13 @@ class ReactionController extends Controller
                     ])->first();
 
                     $post->user->detail->trust_score -= $log->change;
+
+                    if ($post->user->detail->trust_score < 70) {
+                        $post->user->detail->suspend_until = now()->addDays(7);
+                    } else {
+                        $post->user->detail->suspend_until = null;
+                    }
+
                     $post->user->detail->save();
 
                     $log->delete();
@@ -45,9 +52,9 @@ class ReactionController extends Controller
                     }
 
                     $post->user->notifications()->where([
-                        'data->type'=>'reaction',
-                        'data->content_type'=>Post::class,
-                        'data->content_id'=>$post->id,
+                        'data->type' => 'reaction',
+                        'data->content_type' => Post::class,
+                        'data->content_id' => $post->id,
                     ])->delete();
 
                     DB::commit();
@@ -81,6 +88,13 @@ class ReactionController extends Controller
                     }
 
                     $post->user->detail->trust_score += $change;
+
+                    if ($post->user->detail->trust_score < 70) {
+                        $post->user->detail->suspend_until = now()->addDays(7);
+                    } else {
+                        $post->user->detail->suspend_until = null;
+                    }
+
                     $post->user->detail->save();
 
                     $log->change = $change;
@@ -90,13 +104,13 @@ class ReactionController extends Controller
                     $voteText = ($request->type == 'up') ? 'upvote' : 'downvote';
 
                     $post->user->notifications()->where([
-                        'data->type'=>'reaction',
-                        'data->content_type'=>Post::class,
-                        'data->content_id'=>$post->id,
+                        'data->type' => 'reaction',
+                        'data->content_type' => Post::class,
+                        'data->content_id' => $post->id,
                     ])->update([
-                        'data->reaction_type'=>$request->type,
-                        'data->title'=>'Your content with title "' . $post->title . '" get '. $voteText .' by ' . auth()->user()->username . '.',
-                    ]);
+                                'data->reaction_type' => $request->type,
+                                'data->title' => 'Your content with title "' . $post->title . '" get ' . $voteText . ' by ' . auth()->user()->username . '.',
+                            ]);
 
                     DB::commit();
 
@@ -129,6 +143,13 @@ class ReactionController extends Controller
                 }
 
                 $post->user->detail->trust_score += $change;
+
+                if ($post->user->detail->trust_score < 70) {
+                    $post->user->detail->suspend_until = now()->addDays(7);
+                } else {
+                    $post->user->detail->suspend_until = null;
+                }
+
                 $post->user->detail->save();
 
                 TrustScoreLog::create([

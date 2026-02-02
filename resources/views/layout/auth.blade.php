@@ -8,6 +8,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link rel="shortcut icon" href="{{ asset('images/logo_primary.png') }}" type="image/png">
   <title>@yield('title', 'authentication')</title>
+  @yield('script');
 
   <script>
     function updateDarkClass(theme, html) {

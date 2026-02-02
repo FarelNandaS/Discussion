@@ -14,11 +14,18 @@
               <x-phosphor-warning-octagon class="w-8 h-8 text-error-content shrink-0" />
               <div>
                 <h3 class="font-bold text-lg">Your Account Is Being Suspended</h3>
-                <p class="text-sm opacity-90">
-                  You cannot create new posts until
-                  <strong>{{ auth()->user()->detail->suspend_until->format('d M Y') }}</strong>.If you feel this is an
-                  error, please appeal.
-                </p>
+                @if (isset(auth()->user()->detail->suspend_until))
+                  <p class="text-sm opacity-90">
+                    You cannot create new posts until
+                    <strong>{{ auth()->user()->detail->suspend_until->format('d M Y') ?? '-' }}</strong>. You can still
+                    read
+                    discussions, but you won't be able to create new post.
+                  </p>
+                @else
+                  <p class="text-sm opacity-90">
+                    You cannot create a post because your trust score is below 70.
+                  </p>
+                @endif
               </div>
             </div>
           </div>
@@ -70,7 +77,8 @@
               <input name="tags" id="tags" class="tagify-input w-full" placeholder="Add tags (press Enter)"
                 {{ $isSuspend ? 'disabled' : '' }}>
               <label class="label">
-                <span class="label-text-alt text-gray-500 italic">User-generated tags help others find your post. (max 10 tags)</span>
+                <span class="label-text-alt text-gray-500 italic">User-generated tags help others find your post. (max 10
+                  tags)</span>
               </label>
             </div>
             <div class="w-full col-span-4 flex justify-end">

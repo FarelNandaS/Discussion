@@ -15,7 +15,7 @@
             <h5 class="text-xl font-bold">
               {{ $notification->data['title'] }}
             </h5>
-            <p>{{ $notification->data['message'] }}</p>
+            <p>{{ $notification->data['message'] ?? '' }}</p>
             <div class="flex w-full mt-4">
               @if (($notification->data['isAppealable'] ?? false) && !$haveAppeal)
                 <button class="btn btn-primary" onclick="modalAppeal.showModal()">Request Appeal</button>

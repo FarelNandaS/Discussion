@@ -3,7 +3,10 @@
 @section('main')
   <main class="w-full min-h-[calc(100vh-60px)] p-4">
     @if ($posts && $posts->count())
-      <h1 class="text-2xl mb-4 border-b border-gray-500 pb-4 font-bold">Newest</h1>
+      <div class="flex justify-between mb-4 border-b border-gray-500 pb-4">
+        <h1 class="text-2xl font-bold">Newest</h1>
+        <input type="date" name="sortDate" id="sortDate" class="input">
+      </div>
       @include('components.post', ['posts' => $posts])
     @else
       <div class="flex justify-center items-center flex-col gap-4 py-20 w-full">

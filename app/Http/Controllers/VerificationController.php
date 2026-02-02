@@ -14,7 +14,7 @@ class VerificationController extends Controller
     public function verify(EmailVerificationRequest $request) {
         $request->fulfill();
 
-        return redirect()->route('home')->with('alert', ['type'=>'success', 'message'=>'Your email verified!']);
+        return view('pages.auth.verifiedNotice')->with('alert', ['type'=>'success', 'message'=>'Your email verified!']);
     }
 
     public function resend(Request $request) {
